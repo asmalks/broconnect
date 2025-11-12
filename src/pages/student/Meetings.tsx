@@ -76,7 +76,7 @@ export default function Meetings() {
 
       const { error } = await supabase.from('meetings').insert({
         student_id: user?.id,
-        complaint_id: complaintId || null,
+        complaint_id: complaintId && complaintId !== 'none' ? complaintId : null,
         requested_date_time: requestedDateTime,
         notes: notes.trim() || null,
       });
@@ -85,7 +85,7 @@ export default function Meetings() {
 
       toast.success('Meeting request submitted successfully!');
       setOpen(false);
-      setComplaintId('');
+      setComplaintId('none');
       setRequestedDateTime('');
       setNotes('');
       loadMeetings();
@@ -143,7 +143,7 @@ export default function Meetings() {
                     <SelectValue placeholder="Select a complaint" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">None</SelectItem>
+                    <SelectItem value="none">None</SelectItem>
                     {complaints.map((complaint) => (
                       <SelectItem key={complaint.id} value={complaint.id}>
                         {complaint.title}
