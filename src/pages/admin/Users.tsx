@@ -4,10 +4,13 @@ import { Input } from '@/components/ui/input';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { supabase } from '@/integrations/supabase/client';
-import { Search, Eye } from 'lucide-react';
+import { Search, Eye, Edit, Shield } from 'lucide-react';
 import { format } from 'date-fns';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { toast } from 'sonner';
 
 export default function Users() {
   const [users, setUsers] = useState<any[]>([]);
@@ -16,6 +19,11 @@ export default function Users() {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedUser, setSelectedUser] = useState<any>(null);
   const [userStats, setUserStats] = useState<any>(null);
+  const [editingUser, setEditingUser] = useState<any>(null);
+  const [editFullName, setEditFullName] = useState('');
+  const [editCenter, setEditCenter] = useState('');
+  const [userRole, setUserRole] = useState<string>('');
+  const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
     loadUsers();
@@ -29,7 +37,7 @@ export default function Users() {
     try {
       const { data, error } = await supabase
         .from('profiles')
-        .select('*')
+        .select('*, user_roles(role)')
         .order('created_at', { ascending: false });
 
       if (error) throw error;
@@ -84,6 +92,51 @@ export default function Users() {
     loadUserStats(user.id);
   };
 
+  const handleEditUser = (user: any) => {
+    setEditingUser(user);
+    setEditFullName(user.full_name);
+    setEditCenter(user.center);
+    setUserRole(user.user_roles?.[0]?.role || 'student');
+  };
+
+  const handleUpdateUser = async () => {
+    if (!editingUser) return;
+
+    try {
+      setSubmitting(true);
+
+      // Update profile
+      const { error: profileError } = await supabase
+        .from('profiles')
+        .update({
+          full_name: editFullName,
+          center: editCenter,
+        })
+        .eq('id', editingUser.id);
+
+      if (profileError) throw profileError;
+
+      // Update role
+      const currentRole = editingUser.user_roles?.[0]?.role;
+      if (currentRole !== userRole) {
+        const { error: roleError } = await supabase
+          .from('user_roles')
+          .update({ role: userRole as 'admin' | 'student' })
+          .eq('user_id', editingUser.id);
+
+        if (roleError) throw roleError;
+      }
+
+      toast.success('User updated successfully');
+      setEditingUser(null);
+      loadUsers();
+    } catch (error: any) {
+      toast.error(error.message || 'Failed to update user');
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
   if (loading) {
     return <div className="flex justify-center p-8">Loading...</div>;
   }
@@ -115,6 +168,7 @@ export default function Users() {
                 <TableHead>Name</TableHead>
                 <TableHead>Email</TableHead>
                 <TableHead>Center</TableHead>
+                <TableHead>Role</TableHead>
                 <TableHead>Joined</TableHead>
                 <TableHead className="text-right">Actions</TableHead>
               </TableRow>
@@ -122,7 +176,7 @@ export default function Users() {
             <TableBody>
               {filteredUsers.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={5} className="text-center py-6 text-muted-foreground">
+                  <TableCell colSpan={6} className="text-center py-6 text-muted-foreground">
                     No users found.
                   </TableCell>
                 </TableRow>
@@ -135,16 +189,30 @@ export default function Users() {
                       <Badge variant="outline">{user.center}</Badge>
                     </TableCell>
                     <TableCell>
+                      <Badge variant={user.user_roles?.[0]?.role === 'admin' ? 'default' : 'secondary'}>
+                        {user.user_roles?.[0]?.role || 'student'}
+                      </Badge>
+                    </TableCell>
+                    <TableCell>
                       {format(new Date(user.created_at), 'MMM d, yyyy')}
                     </TableCell>
                     <TableCell className="text-right">
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => handleViewUser(user)}
-                      >
-                        <Eye className="h-4 w-4" />
-                      </Button>
+                      <div className="flex justify-end gap-2">
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => handleViewUser(user)}
+                        >
+                          <Eye className="h-4 w-4" />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => handleEditUser(user)}
+                        >
+                          <Edit className="h-4 w-4" />
+                        </Button>
+                      </div>
                     </TableCell>
                   </TableRow>
                 ))
@@ -173,6 +241,12 @@ export default function Users() {
               <p className="font-medium">{selectedUser?.center}</p>
             </div>
             <div>
+              <p className="text-sm text-muted-foreground">Role</p>
+              <Badge variant={selectedUser?.user_roles?.[0]?.role === 'admin' ? 'default' : 'secondary'}>
+                {selectedUser?.user_roles?.[0]?.role || 'student'}
+              </Badge>
+            </div>
+            <div>
               <p className="text-sm text-muted-foreground">Member Since</p>
               <p className="font-medium">
                 {selectedUser && format(new Date(selectedUser.created_at), 'MMMM d, yyyy')}
@@ -190,6 +264,61 @@ export default function Users() {
                 </div>
               </>
             )}
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={!!editingUser} onOpenChange={() => setEditingUser(null)}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Edit User</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="fullName">Full Name</Label>
+              <Input
+                id="fullName"
+                value={editFullName}
+                onChange={(e) => setEditFullName(e.target.value)}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="center">Center</Label>
+              <Select value={editCenter} onValueChange={setEditCenter}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="Kochi">Kochi</SelectItem>
+                  <SelectItem value="Kozhikode">Kozhikode</SelectItem>
+                  <SelectItem value="Trivandrum">Trivandrum</SelectItem>
+                  <SelectItem value="Kannur">Kannur</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="role">
+                <Shield className="inline h-4 w-4 mr-1" />
+                Role
+              </Label>
+              <Select value={userRole} onValueChange={setUserRole}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="student">Student</SelectItem>
+                  <SelectItem value="admin">Admin</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="flex gap-3">
+              <Button onClick={handleUpdateUser} disabled={submitting} className="flex-1">
+                {submitting ? 'Updating...' : 'Update User'}
+              </Button>
+              <Button variant="outline" onClick={() => setEditingUser(null)}>
+                Cancel
+              </Button>
+            </div>
           </div>
         </DialogContent>
       </Dialog>

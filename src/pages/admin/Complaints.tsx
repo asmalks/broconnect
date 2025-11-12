@@ -3,20 +3,31 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { supabase } from '@/integrations/supabase/client';
-import { Eye, Search } from 'lucide-react';
+import { useAuth } from '@/contexts/AuthContext';
+import { Eye, Search, Edit } from 'lucide-react';
 import { format } from 'date-fns';
+import { toast } from 'sonner';
 
 export default function AdminComplaints() {
+  const { user } = useAuth();
   const [complaints, setComplaints] = useState<any[]>([]);
   const [filteredComplaints, setFilteredComplaints] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const [selectedComplaint, setSelectedComplaint] = useState<any>(null);
+  const [editingComplaint, setEditingComplaint] = useState<any>(null);
+  const [editStatus, setEditStatus] = useState('');
+  const [editPriority, setEditPriority] = useState('');
+  const [editCategory, setEditCategory] = useState('');
+  const [adminNotes, setAdminNotes] = useState('');
+  const [updating, setUpdating] = useState(false);
 
   useEffect(() => {
     loadComplaints();
@@ -82,6 +93,52 @@ export default function AdminComplaints() {
         return 'bg-success/10 text-success border-success/20';
       default:
         return 'bg-muted';
+    }
+  };
+
+  const handleEditComplaint = (complaint: any) => {
+    setEditingComplaint(complaint);
+    setEditStatus(complaint.status);
+    setEditPriority(complaint.priority);
+    setEditCategory(complaint.category);
+    setAdminNotes('');
+  };
+
+  const handleUpdateComplaint = async () => {
+    if (!editingComplaint) return;
+
+    try {
+      setUpdating(true);
+
+      const { error: updateError } = await supabase
+        .from('complaints')
+        .update({
+          status: editStatus as 'Pending' | 'In Progress' | 'Resolved',
+          priority: editPriority as 'Low' | 'Medium' | 'High',
+          category: editCategory as 'Technical' | 'Mentor' | 'Facility' | 'Other',
+          assigned_admin_id: user?.id,
+        })
+        .eq('id', editingComplaint.id);
+
+      if (updateError) throw updateError;
+
+      // Add timeline entry
+      await supabase.from('complaint_timeline').insert({
+        complaint_id: editingComplaint.id,
+        action_by: user?.id,
+        action_type: 'status_updated',
+        old_value: editingComplaint.status,
+        new_value: editStatus,
+        notes: adminNotes || null,
+      });
+
+      toast.success('Complaint updated successfully');
+      setEditingComplaint(null);
+      loadComplaints();
+    } catch (error: any) {
+      toast.error(error.message || 'Failed to update complaint');
+    } finally {
+      setUpdating(false);
     }
   };
 
@@ -166,13 +223,22 @@ export default function AdminComplaints() {
                       {format(new Date(complaint.created_at), 'MMM d, yyyy')}
                     </TableCell>
                     <TableCell className="text-right">
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => setSelectedComplaint(complaint)}
-                      >
-                        <Eye className="h-4 w-4" />
-                      </Button>
+                      <div className="flex justify-end gap-2">
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => setSelectedComplaint(complaint)}
+                        >
+                          <Eye className="h-4 w-4" />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => handleEditComplaint(complaint)}
+                        >
+                          <Edit className="h-4 w-4" />
+                        </Button>
+                      </div>
                     </TableCell>
                   </TableRow>
                 ))
@@ -227,6 +293,84 @@ export default function AdminComplaints() {
                 </a>
               </div>
             )}
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={!!editingComplaint} onOpenChange={() => setEditingComplaint(null)}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>Edit Complaint</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div>
+              <p className="text-sm font-medium mb-2">Complaint: {editingComplaint?.title}</p>
+              <p className="text-sm text-muted-foreground">{editingComplaint?.description}</p>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label>Status</Label>
+                <Select value={editStatus} onValueChange={setEditStatus}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Pending">Pending</SelectItem>
+                    <SelectItem value="In Progress">In Progress</SelectItem>
+                    <SelectItem value="Resolved">Resolved</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="space-y-2">
+                <Label>Priority</Label>
+                <Select value={editPriority} onValueChange={setEditPriority}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Low">Low</SelectItem>
+                    <SelectItem value="Medium">Medium</SelectItem>
+                    <SelectItem value="High">High</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <Label>Category</Label>
+              <Select value={editCategory} onValueChange={setEditCategory}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="Technical">Technical</SelectItem>
+                  <SelectItem value="Mentor">Mentor</SelectItem>
+                  <SelectItem value="Facility">Facility</SelectItem>
+                  <SelectItem value="Other">Other</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="space-y-2">
+              <Label>Admin Notes (Optional)</Label>
+              <Textarea
+                placeholder="Add notes about the changes..."
+                value={adminNotes}
+                onChange={(e) => setAdminNotes(e.target.value)}
+                rows={3}
+              />
+            </div>
+
+            <div className="flex gap-3">
+              <Button onClick={handleUpdateComplaint} disabled={updating} className="flex-1">
+                {updating ? 'Updating...' : 'Update Complaint'}
+              </Button>
+              <Button variant="outline" onClick={() => setEditingComplaint(null)}>
+                Cancel
+              </Button>
+            </div>
           </div>
         </DialogContent>
       </Dialog>
