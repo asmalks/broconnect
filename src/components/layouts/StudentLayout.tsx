@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { LayoutDashboard, Plus, ListOrdered, MessageSquare, Calendar, User, LogOut, Menu } from 'lucide-react';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { useState } from 'react';
+import AnnouncementBanner from '@/components/AnnouncementBanner';
 
 const navigation = [
   { name: 'Dashboard', href: '/student', icon: LayoutDashboard },
@@ -103,7 +104,10 @@ export default function StudentLayout() {
 
         {/* Page Content */}
         <main className="flex-1 p-6 overflow-auto">
-          <Outlet />
+          <AnnouncementBanner />
+          <div className="mt-6">
+            <Outlet />
+          </div>
         </main>
       </div>
     </div>

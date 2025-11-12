@@ -11,8 +11,18 @@ import AdminLayout from "./components/layouts/AdminLayout";
 import StudentDashboard from "./pages/student/Dashboard";
 import RaiseComplaint from "./pages/student/RaiseComplaint";
 import StudentComplaints from "./pages/student/Complaints";
+import StudentComplaintDetail from "./pages/student/ComplaintDetail";
+import StudentMessages from "./pages/student/Messages";
+import StudentMeetings from "./pages/student/Meetings";
+import StudentProfile from "./pages/student/Profile";
 import AdminDashboard from "./pages/admin/Dashboard";
 import AdminComplaints from "./pages/admin/Complaints";
+import AdminComplaintDetail from "./pages/admin/ComplaintDetail";
+import AdminMessages from "./pages/admin/Messages";
+import AdminMeetings from "./pages/admin/Meetings";
+import AdminAnalytics from "./pages/admin/Analytics";
+import AdminAnnouncements from "./pages/admin/Announcements";
+import AdminUsers from "./pages/admin/Users";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -37,9 +47,10 @@ const App = () => (
               <Route index element={<StudentDashboard />} />
               <Route path="raise-complaint" element={<RaiseComplaint />} />
               <Route path="complaints" element={<StudentComplaints />} />
-              <Route path="messages" element={<div>Messages - Coming Soon</div>} />
-              <Route path="meetings" element={<div>Meetings - Coming Soon</div>} />
-              <Route path="profile" element={<div>Profile - Coming Soon</div>} />
+              <Route path="complaints/:id" element={<StudentComplaintDetail />} />
+              <Route path="messages" element={<StudentMessages />} />
+              <Route path="meetings" element={<StudentMeetings />} />
+              <Route path="profile" element={<StudentProfile />} />
             </Route>
 
             {/* Admin Routes */}
@@ -50,11 +61,12 @@ const App = () => (
             }>
               <Route index element={<AdminDashboard />} />
               <Route path="complaints" element={<AdminComplaints />} />
-              <Route path="messages" element={<div>Messages - Coming Soon</div>} />
-              <Route path="meetings" element={<div>Meetings - Coming Soon</div>} />
-              <Route path="analytics" element={<div>Analytics - Coming Soon</div>} />
-              <Route path="announcements" element={<div>Announcements - Coming Soon</div>} />
-              <Route path="users" element={<div>Users - Coming Soon</div>} />
+              <Route path="complaints/:id" element={<AdminComplaintDetail />} />
+              <Route path="messages" element={<AdminMessages />} />
+              <Route path="meetings" element={<AdminMeetings />} />
+              <Route path="analytics" element={<AdminAnalytics />} />
+              <Route path="announcements" element={<AdminAnnouncements />} />
+              <Route path="users" element={<AdminUsers />} />
             </Route>
 
             <Route path="*" element={<NotFound />} />

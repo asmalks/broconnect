@@ -1,0 +1,180 @@
+import { useEffect, useState, useRef } from 'react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/contexts/AuthContext';
+import { Send } from 'lucide-react';
+import { format } from 'date-fns';
+import { toast } from 'sonner';
+
+interface ComplaintChatProps {
+  complaintId: string;
+  isAdmin?: boolean;
+}
+
+export default function ComplaintChat({ complaintId, isAdmin = false }: ComplaintChatProps) {
+  const { user } = useAuth();
+  const [messages, setMessages] = useState<any[]>([]);
+  const [newMessage, setNewMessage] = useState('');
+  const [sending, setSending] = useState(false);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (complaintId && user) {
+      loadMessages();
+      subscribeToMessages();
+    }
+  }, [complaintId, user]);
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  const loadMessages = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('messages')
+        .select('*, sender:profiles!messages_sender_id_fkey(full_name)')
+        .eq('complaint_id', complaintId)
+        .order('created_at', { ascending: true });
+
+      if (error) throw error;
+      setMessages(data || []);
+    } catch (error) {
+      console.error('Error loading messages:', error);
+    }
+  };
+
+  const subscribeToMessages = () => {
+    const channel = supabase
+      .channel(`messages-${complaintId}`)
+      .on(
+        'postgres_changes',
+        {
+          event: 'INSERT',
+          schema: 'public',
+          table: 'messages',
+          filter: `complaint_id=eq.${complaintId}`,
+        },
+        () => {
+          loadMessages();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  };
+
+  const sendMessage = async () => {
+    if (!newMessage.trim() || !user) return;
+
+    try {
+      setSending(true);
+
+      // Get receiver ID (admin or student)
+      const { data: complaint } = await supabase
+        .from('complaints')
+        .select('user_id, assigned_admin_id')
+        .eq('id', complaintId)
+        .single();
+
+      const receiverId = isAdmin ? complaint?.user_id : complaint?.assigned_admin_id;
+
+      if (!receiverId) {
+        toast.error('Cannot send message: No recipient assigned');
+        return;
+      }
+
+      const { error } = await supabase.from('messages').insert({
+        complaint_id: complaintId,
+        sender_id: user.id,
+        receiver_id: receiverId,
+        message_text: newMessage.trim(),
+      });
+
+      if (error) throw error;
+
+      setNewMessage('');
+    } catch (error: any) {
+      toast.error(error.message || 'Failed to send message');
+    } finally {
+      setSending(false);
+    }
+  };
+
+  const handleKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      sendMessage();
+    }
+  };
+
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle>Messages</CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        <div className="h-[400px] overflow-y-auto space-y-4 pr-4">
+          {messages.length === 0 ? (
+            <p className="text-center text-muted-foreground py-8">
+              No messages yet. Start the conversation!
+            </p>
+          ) : (
+            messages.map((message) => {
+              const isOwnMessage = message.sender_id === user?.id;
+              return (
+                <div
+                  key={message.id}
+                  className={`flex gap-3 ${isOwnMessage ? 'flex-row-reverse' : ''}`}
+                >
+                  <Avatar className="h-8 w-8">
+                    <AvatarFallback>
+                      {message.sender?.full_name?.charAt(0) || 'U'}
+                    </AvatarFallback>
+                  </Avatar>
+                  <div className={`flex-1 ${isOwnMessage ? 'text-right' : ''}`}>
+                    <div
+                      className={`inline-block rounded-lg px-4 py-2 max-w-[80%] ${
+                        isOwnMessage
+                          ? 'bg-primary text-primary-foreground'
+                          : 'bg-muted'
+                      }`}
+                    >
+                      <p className="text-sm">{message.message_text}</p>
+                    </div>
+                    <p className="text-xs text-muted-foreground mt-1">
+                      {format(new Date(message.created_at), 'MMM d, h:mm a')}
+                    </p>
+                  </div>
+                </div>
+              );
+            })
+          )}
+          <div ref={messagesEndRef} />
+        </div>
+
+        <div className="flex gap-2">
+          <Input
+            placeholder="Type your message..."
+            value={newMessage}
+            onChange={(e) => setNewMessage(e.target.value)}
+            onKeyPress={handleKeyPress}
+            disabled={sending}
+          />
+          <Button onClick={sendMessage} disabled={sending || !newMessage.trim()}>
+            <Send className="h-4 w-4" />
+          </Button>
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
