@@ -36,10 +36,6 @@ export default function RaiseComplaint() {
   const [isAnonymous, setIsAnonymous] = useState(false);
   const [file, setFile] = useState<File | null>(null);
 
-  useEffect(() => {
-    loadProfile();
-  }, []);
-
   const loadProfile = async () => {
     if (!user) return;
     const { data } = await supabase
@@ -49,6 +45,10 @@ export default function RaiseComplaint() {
       .single();
     setProfileData(data);
   };
+
+  useEffect(() => {
+    loadProfile();
+  }, []);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
