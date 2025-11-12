@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -36,9 +36,9 @@ export default function RaiseComplaint() {
   const [isAnonymous, setIsAnonymous] = useState(false);
   const [file, setFile] = useState<File | null>(null);
 
-  useState(() => {
+  useEffect(() => {
     loadProfile();
-  });
+  }, []);
 
   const loadProfile = async () => {
     if (!user) return;
