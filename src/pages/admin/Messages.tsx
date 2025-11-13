@@ -20,7 +20,7 @@ export default function AdminMessages() {
     try {
       const { data, error } = await supabase
         .from('complaints')
-        .select('id, title, status, profiles!complaints_user_id_fkey(full_name)')
+        .select('id, title, status, profiles(full_name)')
         .order('updated_at', { ascending: false });
 
       if (error) throw error;

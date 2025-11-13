@@ -39,7 +39,7 @@ export default function AdminMeetings() {
     try {
       const { data, error } = await supabase
         .from('meetings')
-        .select('*, profiles!meetings_student_id_fkey(full_name, email)')
+        .select('*, profiles(full_name, email)')
         .order('requested_date_time', { ascending: false });
 
       if (error) throw error;
