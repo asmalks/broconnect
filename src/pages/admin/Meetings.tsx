@@ -7,6 +7,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Textarea } from '@/components/ui/textarea';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { format } from 'date-fns';
@@ -19,6 +20,7 @@ export default function AdminMeetings() {
   const [selectedMeeting, setSelectedMeeting] = useState<any>(null);
   const [status, setStatus] = useState('');
   const [scheduledDateTime, setScheduledDateTime] = useState('');
+  const [notes, setNotes] = useState('');
   const [updating, setUpdating] = useState(false);
 
   useEffect(() => {
@@ -29,6 +31,7 @@ export default function AdminMeetings() {
     if (selectedMeeting) {
       setStatus(selectedMeeting.status);
       setScheduledDateTime(selectedMeeting.scheduled_date_time || '');
+      setNotes(selectedMeeting.notes || '');
     }
   }, [selectedMeeting]);
 
@@ -55,6 +58,7 @@ export default function AdminMeetings() {
       const updates: any = {
         status,
         admin_id: user?.id,
+        notes: notes || null,
       };
 
       if (scheduledDateTime) {
@@ -209,6 +213,16 @@ export default function AdminMeetings() {
                 />
               </div>
             )}
+
+            <div className="space-y-2">
+              <Label>Admin Notes</Label>
+              <Textarea
+                value={notes}
+                onChange={(e) => setNotes(e.target.value)}
+                placeholder="Add notes about this meeting..."
+                rows={3}
+              />
+            </div>
 
             <div className="flex gap-3">
               <Button onClick={handleUpdate} disabled={updating} className="flex-1">
