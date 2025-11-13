@@ -45,7 +45,7 @@ export default function AdminComplaintDetail() {
     try {
       const { data, error } = await supabase
         .from('complaints')
-        .select('*, profiles!complaints_user_id_fkey(full_name, email, center)')
+        .select('*, profiles(full_name, email, center)')
         .eq('id', id)
         .single();
 
