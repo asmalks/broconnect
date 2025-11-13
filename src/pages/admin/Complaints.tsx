@@ -41,7 +41,7 @@ export default function AdminComplaints() {
     try {
       const { data, error } = await supabase
         .from('complaints')
-        .select('*, profiles!complaints_user_id_fkey(full_name, email)')
+        .select('*, profiles(full_name, email)')
         .order('created_at', { ascending: false });
 
       if (error) throw error;

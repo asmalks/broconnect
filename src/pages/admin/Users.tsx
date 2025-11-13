@@ -37,7 +37,10 @@ export default function Users() {
     try {
       const { data, error } = await supabase
         .from('profiles')
-        .select('*, user_roles(role)')
+        .select(`
+          *,
+          user_roles!inner(role)
+        `)
         .order('created_at', { ascending: false });
 
       if (error) throw error;
