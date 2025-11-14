@@ -47,6 +47,27 @@ export type Database = {
         }
         Relationships: []
       }
+      centers: {
+        Row: {
+          created_at: string
+          id: string
+          location: string
+          name: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          location: string
+          name: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          location?: string
+          name?: string
+        }
+        Relationships: []
+      }
       complaint_timeline: {
         Row: {
           action_by: string | null
