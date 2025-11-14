@@ -62,14 +62,40 @@ export default function AdminComplaintDetail() {
 
   const loadTimeline = async () => {
     try {
-      const { data, error } = await supabase
+      // Fetch timeline first
+      const { data: timelineData, error: timelineError } = await supabase
         .from('complaint_timeline')
-        .select('*, profiles!complaint_timeline_action_by_fkey(full_name)')
+        .select('*')
         .eq('complaint_id', id)
         .order('created_at', { ascending: true });
 
-      if (error) throw error;
-      setTimeline(data || []);
+      if (timelineError) throw timelineError;
+
+      // Fetch profiles separately for action_by
+      if (timelineData && timelineData.length > 0) {
+        const userIds = [...new Set(timelineData.map(t => t.action_by).filter(Boolean))];
+        if (userIds.length > 0) {
+          const { data: profilesData, error: profilesError } = await supabase
+            .from('profiles')
+            .select('id, full_name')
+            .in('id', userIds);
+
+          if (profilesError) throw profilesError;
+
+          // Merge profiles into timeline
+          const profilesMap = new Map(profilesData?.map(p => [p.id, p]) || []);
+          const enrichedTimeline = timelineData.map(entry => ({
+            ...entry,
+            profiles: entry.action_by ? profilesMap.get(entry.action_by) : null
+          }));
+
+          setTimeline(enrichedTimeline);
+        } else {
+          setTimeline(timelineData);
+        }
+      } else {
+        setTimeline([]);
+      }
     } catch (error) {
       console.error('Error loading timeline:', error);
     }

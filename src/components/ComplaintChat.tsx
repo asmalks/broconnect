@@ -38,14 +38,36 @@ export default function ComplaintChat({ complaintId, isAdmin = false }: Complain
 
   const loadMessages = async () => {
     try {
-      const { data, error } = await supabase
+      // Fetch messages first
+      const { data: messagesData, error: messagesError } = await supabase
         .from('messages')
-        .select('*, sender:profiles!messages_sender_id_fkey(full_name)')
+        .select('*')
         .eq('complaint_id', complaintId)
         .order('created_at', { ascending: true });
 
-      if (error) throw error;
-      setMessages(data || []);
+      if (messagesError) throw messagesError;
+
+      // Fetch sender profiles separately
+      if (messagesData && messagesData.length > 0) {
+        const senderIds = [...new Set(messagesData.map(m => m.sender_id))];
+        const { data: profilesData, error: profilesError } = await supabase
+          .from('profiles')
+          .select('id, full_name')
+          .in('id', senderIds);
+
+        if (profilesError) throw profilesError;
+
+        // Merge profiles into messages
+        const profilesMap = new Map(profilesData?.map(p => [p.id, p]) || []);
+        const enrichedMessages = messagesData.map(msg => ({
+          ...msg,
+          sender: profilesMap.get(msg.sender_id)
+        }));
+
+        setMessages(enrichedMessages);
+      } else {
+        setMessages([]);
+      }
     } catch (error) {
       console.error('Error loading messages:', error);
     }
