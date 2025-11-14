@@ -65,6 +65,9 @@ export default {
           DEFAULT: "hsl(var(--warning))",
           foreground: "hsl(var(--warning-foreground))",
         },
+        "hover-accent": "hsl(var(--hover-accent))",
+        "message-sent": "hsl(var(--message-sent))",
+        "message-received": "hsl(var(--message-received))",
       },
       borderRadius: {
         lg: "var(--radius)",

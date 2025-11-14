@@ -64,7 +64,7 @@ export default function Centers() {
         .order('name', { ascending: true });
 
       if (error) throw error;
-      setCenters(data || []);
+      setCenters((data as Center[]) || []);
     } catch (error) {
       console.error('Error loading centers:', error);
     } finally {
@@ -81,15 +81,15 @@ export default function Centers() {
       if (editingCenter) {
         const { error } = await supabase
           .from('centers')
-          .update({ name, location })
+          .update({ name, location } as any)
           .eq('id', editingCenter.id);
 
         if (error) throw error;
         toast.success('Center updated successfully');
       } else {
-        const { error } = await supabase
-          .from('centers')
-          .insert({ name, location });
+      const { error } = await supabase
+        .from('centers')
+        .insert([{ name, location }]);
 
         if (error) throw error;
         toast.success('Center added successfully');

@@ -22,6 +22,7 @@ import AdminMessages from "./pages/admin/Messages";
 import AdminMeetings from "./pages/admin/Meetings";
 import AdminAnalytics from "./pages/admin/Analytics";
 import AdminAnnouncements from "./pages/admin/Announcements";
+import AdminCenters from "./pages/admin/Centers";
 import AdminUsers from "./pages/admin/Users";
 import NotFound from "./pages/NotFound";
 
@@ -66,6 +67,7 @@ const App = () => (
               <Route path="meetings" element={<AdminMeetings />} />
               <Route path="analytics" element={<AdminAnalytics />} />
               <Route path="announcements" element={<AdminAnnouncements />} />
+              <Route path="centers" element={<AdminCenters />} />
               <Route path="users" element={<AdminUsers />} />
             </Route>
 

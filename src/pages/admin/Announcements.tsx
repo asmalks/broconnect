@@ -235,11 +235,11 @@ export default function Announcements() {
           </Card>
         ) : (
           announcements.map((announcement) => (
-            <Card key={announcement.id}>
+            <Card key={announcement.id} className={announcement.is_active ? 'border-l-4 border-l-warning bg-warning/5' : ''}>
               <CardHeader>
                 <div className="flex justify-between items-start">
                   <div className="flex-1">
-                    <CardTitle className="text-lg">{announcement.title}</CardTitle>
+                    <CardTitle className={`text-lg ${announcement.is_active ? 'text-warning' : ''}`}>{announcement.title}</CardTitle>
                     <CardDescription className="mt-2">
                       {announcement.message}
                     </CardDescription>
@@ -264,7 +264,10 @@ export default function Announcements() {
               </CardHeader>
               <CardContent>
                 <div className="flex flex-wrap gap-2 items-center text-sm">
-                  <Badge variant={announcement.is_active ? 'default' : 'secondary'}>
+                  <Badge 
+                    variant={announcement.is_active ? 'default' : 'secondary'}
+                    className={announcement.is_active ? 'bg-warning hover:bg-warning/80' : ''}
+                  >
                     {announcement.is_active ? 'Active' : 'Inactive'}
                   </Badge>
                   <Badge variant="outline">

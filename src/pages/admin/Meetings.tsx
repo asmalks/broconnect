@@ -208,8 +208,8 @@ export default function AdminMeetings() {
                 <Label>Scheduled Date & Time</Label>
                 <Input
                   type="datetime-local"
-                  value={scheduledDateTime}
-                  onChange={(e) => setScheduledDateTime(e.target.value)}
+                  value={scheduledDateTime ? new Date(scheduledDateTime).toISOString().slice(0, 16) : ''}
+                  onChange={(e) => setScheduledDateTime(e.target.value ? new Date(e.target.value).toISOString() : '')}
                 />
               </div>
             )}
