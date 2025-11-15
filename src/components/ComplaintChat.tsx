@@ -2,7 +2,7 @@ import { useEffect, useState, useRef } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { Send } from 'lucide-react';
@@ -66,7 +66,7 @@ export default function ComplaintChat({ complaintId, isAdmin = false }: Complain
         const senderIds = [...new Set(messagesData.map(m => m.sender_id))];
         const { data: profilesData, error: profilesError } = await supabase
           .from('profiles')
-          .select('id, full_name')
+          .select('id, full_name, avatar_url')
           .in('id', senderIds);
 
         if (profilesError) throw profilesError;
@@ -173,6 +173,9 @@ export default function ComplaintChat({ complaintId, isAdmin = false }: Complain
                   className={`flex gap-2 ${isOwnMessage ? 'flex-row-reverse' : 'flex-row'}`}
                 >
                   <Avatar className="h-8 w-8 flex-shrink-0">
+                    {message.sender?.avatar_url && (
+                      <AvatarImage src={message.sender.avatar_url} alt={message.sender.full_name} />
+                    )}
                     <AvatarFallback>
                       {message.sender?.full_name?.charAt(0) || 'U'}
                     </AvatarFallback>

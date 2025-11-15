@@ -11,10 +11,14 @@ export default function AdminMessages() {
   const [conversations, setConversations] = useState<any[]>([]);
   const [selectedComplaint, setSelectedComplaint] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const [unreadCounts, setUnreadCounts] = useState<Record<string, number>>({});
 
   useEffect(() => {
-    loadConversations();
-  }, []);
+    if (user) {
+      loadConversations();
+      loadUnreadCounts();
+    }
+  }, [user]);
 
   const loadConversations = async () => {
     try {
@@ -32,6 +36,26 @@ export default function AdminMessages() {
       console.error('Error loading conversations:', error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const loadUnreadCounts = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('messages')
+        .select('complaint_id')
+        .eq('receiver_id', user?.id)
+        .eq('is_read', false);
+
+      if (error) throw error;
+
+      const counts: Record<string, number> = {};
+      data?.forEach((msg) => {
+        counts[msg.complaint_id] = (counts[msg.complaint_id] || 0) + 1;
+      });
+      setUnreadCounts(counts);
+    } catch (error) {
+      console.error('Error loading unread counts:', error);
     }
   };
 
@@ -62,8 +86,11 @@ export default function AdminMessages() {
               {conversations.map((conv) => (
                 <button
                   key={conv.id}
-                  onClick={() => setSelectedComplaint(conv.id)}
-                  className={`w-full text-left p-3 rounded-xl transition-all ${
+                  onClick={() => {
+                    setSelectedComplaint(conv.id);
+                    loadUnreadCounts();
+                  }}
+                  className={`w-full text-left p-3 rounded-xl transition-all relative ${
                     selectedComplaint === conv.id
                       ? 'bg-primary text-primary-foreground shadow-md'
                       : 'hover:bg-muted'
@@ -79,6 +106,11 @@ export default function AdminMessages() {
                   >
                     {conv.status}
                   </Badge>
+                  {unreadCounts[conv.id] > 0 && (
+                    <span className="absolute top-2 right-2 bg-destructive text-destructive-foreground text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
+                      {unreadCounts[conv.id]}
+                    </span>
+                  )}
                 </button>
               ))}
             </CardContent>
