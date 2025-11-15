@@ -160,6 +160,7 @@ export default function Meetings() {
                   type="datetime-local"
                   value={requestedDateTime}
                   onChange={(e) => setRequestedDateTime(e.target.value)}
+                  min={new Date().toISOString().slice(0, 16)}
                   required
                 />
               </div>
