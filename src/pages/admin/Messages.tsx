@@ -56,22 +56,27 @@ export default function AdminMessages() {
           </CardContent>
         </Card>
       ) : (
-        <div className="grid gap-6 lg:grid-cols-4">
-          <Card className="lg:col-span-1">
-            <CardContent className="p-4 space-y-2 max-h-[600px] overflow-y-auto">
+        <div className="grid gap-4 lg:grid-cols-4 h-[calc(100vh-12rem)]">
+          <Card className="lg:col-span-1 bg-gradient-to-b from-card to-card/50">
+            <CardContent className="p-2 space-y-1 h-full overflow-y-auto">
               {conversations.map((conv) => (
                 <button
                   key={conv.id}
                   onClick={() => setSelectedComplaint(conv.id)}
-                  className={`w-full text-left p-3 rounded-lg transition-colors ${
+                  className={`w-full text-left p-3 rounded-xl transition-all ${
                     selectedComplaint === conv.id
-                      ? 'bg-primary text-primary-foreground'
-                      : 'hover:bg-accent'
+                      ? 'bg-primary text-primary-foreground shadow-md'
+                      : 'hover:bg-muted'
                   }`}
                 >
-                  <p className="font-medium text-sm truncate">{conv.title}</p>
-                  <p className="text-xs opacity-70">{conv.profiles?.full_name}</p>
-                  <Badge variant="outline" className="mt-1 text-xs">
+                  <p className="font-semibold text-sm truncate">{conv.title}</p>
+                  <p className={`text-xs mt-1 ${selectedComplaint === conv.id ? 'opacity-90' : 'text-muted-foreground'}`}>
+                    {conv.profiles?.full_name}
+                  </p>
+                  <Badge 
+                    variant="outline" 
+                    className={`mt-1 text-xs ${selectedComplaint === conv.id ? 'border-primary-foreground/30' : ''}`}
+                  >
                     {conv.status}
                   </Badge>
                 </button>

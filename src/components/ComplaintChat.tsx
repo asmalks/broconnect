@@ -24,6 +24,7 @@ export default function ComplaintChat({ complaintId, isAdmin = false }: Complain
   useEffect(() => {
     if (complaintId && user) {
       loadMessages();
+      markMessagesAsRead();
       subscribeToMessages();
     }
   }, [complaintId, user]);
@@ -34,6 +35,19 @@ export default function ComplaintChat({ complaintId, isAdmin = false }: Complain
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  const markMessagesAsRead = async () => {
+    try {
+      await supabase
+        .from('messages')
+        .update({ is_read: true })
+        .eq('complaint_id', complaintId)
+        .eq('receiver_id', user?.id)
+        .eq('is_read', false);
+    } catch (error) {
+      console.error('Error marking messages as read:', error);
+    }
   };
 
   const loadMessages = async () => {
@@ -140,12 +154,12 @@ export default function ComplaintChat({ complaintId, isAdmin = false }: Complain
   };
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Messages</CardTitle>
+    <Card className="h-full flex flex-col bg-gradient-to-b from-card to-muted/20">
+      <CardHeader className="border-b bg-gradient-to-r from-primary/10 to-accent/10">
+        <CardTitle className="text-lg">Chat</CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
-        <div className="h-[400px] overflow-y-auto space-y-4 pr-4">
+        <div className="h-[500px] overflow-y-auto space-y-3 pr-2">
           {messages.length === 0 ? (
             <p className="text-center text-muted-foreground py-8">
               No messages yet. Start the conversation!
@@ -156,26 +170,29 @@ export default function ComplaintChat({ complaintId, isAdmin = false }: Complain
               return (
                 <div
                   key={message.id}
-                  className={`flex gap-3 ${isOwnMessage ? 'flex-row-reverse' : ''}`}
+                  className={`flex gap-2 ${isOwnMessage ? 'flex-row-reverse' : 'flex-row'}`}
                 >
-                  <Avatar className="h-8 w-8">
+                  <Avatar className="h-8 w-8 flex-shrink-0">
                     <AvatarFallback>
                       {message.sender?.full_name?.charAt(0) || 'U'}
                     </AvatarFallback>
                   </Avatar>
-                  <div className={`flex-1 ${isOwnMessage ? 'text-right' : ''}`}>
-                    <div
-                      className={`inline-block rounded-lg px-4 py-2 max-w-[80%] ${
-                        isOwnMessage
-                          ? 'bg-primary text-primary-foreground'
-                          : 'bg-muted'
-                      }`}
-                    >
-                      <p className="text-sm">{message.message_text}</p>
+                  <div className={`flex flex-col ${isOwnMessage ? 'items-end' : 'items-start'} max-w-[75%]`}>
+                    {!isOwnMessage && (
+                      <span className="text-xs font-medium text-muted-foreground mb-1 px-1">
+                        {message.sender?.full_name}
+                      </span>
+                    )}
+                    <div className={`rounded-2xl px-4 py-2 shadow-sm ${
+                      isOwnMessage 
+                        ? 'bg-primary text-primary-foreground rounded-tr-sm' 
+                        : 'bg-card border rounded-tl-sm'
+                    }`}>
+                      <p className="text-sm leading-relaxed">{message.message_text}</p>
                     </div>
-                    <p className="text-xs text-muted-foreground mt-1">
-                      {format(new Date(message.created_at), 'MMM d, h:mm a')}
-                    </p>
+                    <span className="text-[10px] text-muted-foreground mt-1 px-1">
+                      {format(new Date(message.created_at), 'HH:mm')}
+                    </span>
                   </div>
                 </div>
               );
@@ -184,15 +201,21 @@ export default function ComplaintChat({ complaintId, isAdmin = false }: Complain
           <div ref={messagesEndRef} />
         </div>
 
-        <div className="flex gap-2">
+        <div className="flex gap-2 pt-4 border-t">
           <Input
-            placeholder="Type your message..."
+            placeholder="Type a message..."
             value={newMessage}
             onChange={(e) => setNewMessage(e.target.value)}
             onKeyPress={handleKeyPress}
             disabled={sending}
+            className="flex-1 rounded-full bg-muted/50 border-muted-foreground/20"
           />
-          <Button onClick={sendMessage} disabled={sending || !newMessage.trim()}>
+          <Button 
+            onClick={sendMessage} 
+            disabled={!newMessage.trim() || sending}
+            size="icon"
+            className="rounded-full h-10 w-10"
+          >
             <Send className="h-4 w-4" />
           </Button>
         </div>

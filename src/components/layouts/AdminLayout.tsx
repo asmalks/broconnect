@@ -92,7 +92,7 @@ export default function AdminLayout() {
             to={item.href}
             onClick={() => setOpen(false)}
             className={`flex items-center gap-3 rounded-lg px-3 py-2 transition-all hover:bg-hover-accent ${
-              isActive ? 'bg-accent text-accent-foreground font-medium' : 'text-muted-foreground'
+              isActive ? 'bg-primary/10 text-primary font-medium border-l-2 border-primary' : 'text-muted-foreground'
             }`}
           >
             <item.icon className="h-5 w-5" />
