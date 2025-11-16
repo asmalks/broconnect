@@ -24,6 +24,7 @@ import AdminAnalytics from "./pages/admin/Analytics";
 import AdminAnnouncements from "./pages/admin/Announcements";
 import AdminCenters from "./pages/admin/Centers";
 import AdminUsers from "./pages/admin/Users";
+import AdminProfile from "./pages/admin/Profile";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -69,6 +70,7 @@ const App = () => (
               <Route path="announcements" element={<AdminAnnouncements />} />
               <Route path="centers" element={<AdminCenters />} />
               <Route path="users" element={<AdminUsers />} />
+              <Route path="profile" element={<AdminProfile />} />
             </Route>
 
             <Route path="*" element={<NotFound />} />
