@@ -155,11 +155,11 @@ export default function ComplaintChat({ complaintId, isAdmin = false }: Complain
 
   return (
     <Card className="h-full flex flex-col bg-gradient-to-b from-card to-muted/20">
-      <CardHeader className="border-b bg-gradient-to-r from-primary/10 to-accent/10">
+      <CardHeader className="border-b bg-gradient-to-r from-primary/10 to-accent/10 flex-shrink-0">
         <CardTitle className="text-lg">Chat</CardTitle>
       </CardHeader>
-      <CardContent className="space-y-4">
-        <div className="h-[500px] overflow-y-auto space-y-3 pr-2">
+      <CardContent className="flex flex-col flex-1 p-4 min-h-0">
+        <div className="flex-1 overflow-y-auto space-y-3 pr-2 scrollbar-hide">
           {messages.length === 0 ? (
             <p className="text-center text-muted-foreground py-8">
               No messages yet. Start the conversation!
@@ -180,7 +180,7 @@ export default function ComplaintChat({ complaintId, isAdmin = false }: Complain
                       {message.sender?.full_name?.charAt(0) || 'U'}
                     </AvatarFallback>
                   </Avatar>
-                  <div className={`flex flex-col ${isOwnMessage ? 'items-end' : 'items-start'} max-w-[75%]`}>
+                  <div className={`flex flex-col ${isOwnMessage ? 'items-end' : 'items-start'} max-w-[70%] lg:max-w-[60%]`}>
                     {!isOwnMessage && (
                       <span className="text-xs font-medium text-muted-foreground mb-1 px-1">
                         {message.sender?.full_name}
@@ -191,7 +191,7 @@ export default function ComplaintChat({ complaintId, isAdmin = false }: Complain
                         ? 'bg-primary text-primary-foreground rounded-tr-sm' 
                         : 'bg-card border rounded-tl-sm'
                     }`}>
-                      <p className="text-sm leading-relaxed">{message.message_text}</p>
+                      <p className="text-sm leading-relaxed break-words">{message.message_text}</p>
                     </div>
                     <span className="text-[10px] text-muted-foreground mt-1 px-1">
                       {format(new Date(message.created_at), 'HH:mm')}
@@ -204,7 +204,7 @@ export default function ComplaintChat({ complaintId, isAdmin = false }: Complain
           <div ref={messagesEndRef} />
         </div>
 
-        <div className="flex gap-2 pt-4 border-t">
+        <div className="flex gap-2 pt-4 border-t flex-shrink-0">
           <Input
             placeholder="Type a message..."
             value={newMessage}

@@ -101,6 +101,7 @@ export default function AdminLayout() {
       {navigation.map((item) => {
         const isActive = location.pathname === item.href;
         const badgeCount = item.badge && item.badgeKey ? badges[item.badgeKey as keyof typeof badges] : 0;
+        const isAnnouncement = item.name === 'Announcements';
         return (
           <Link
             key={item.name}
@@ -108,8 +109,12 @@ export default function AdminLayout() {
             onClick={() => setOpen(false)}
             className={`group flex items-center gap-3 rounded-2xl px-4 py-3 transition-all duration-200 ${
               isActive 
-                ? 'bg-white/20 text-white font-medium shadow-sm backdrop-blur-sm' 
-                : 'text-white/80 hover:bg-white/10 hover:text-white'
+                ? isAnnouncement 
+                  ? 'bg-stat-yellow/30 text-white font-medium shadow-sm backdrop-blur-sm border-l-4 border-stat-yellow' 
+                  : 'bg-white/20 text-white font-medium shadow-sm backdrop-blur-sm'
+                : isAnnouncement
+                  ? 'text-white/80 hover:bg-stat-yellow/20 hover:text-white'
+                  : 'text-white/80 hover:bg-white/10 hover:text-white'
             }`}
           >
             <item.icon className="h-5 w-5" />
@@ -152,7 +157,7 @@ export default function AdminLayout() {
           </div>
 
           {/* Navigation */}
-          <nav className="flex-1 space-y-1.5 px-3 overflow-y-auto">
+          <nav className="flex-1 space-y-1.5 px-3 overflow-y-auto scrollbar-hide">
             <NavItems />
           </nav>
 
@@ -201,7 +206,7 @@ export default function AdminLayout() {
                       <p className="text-white/70 text-xs">{profileData?.center || 'Admin Panel'}</p>
                     </div>
                   </div>
-                  <nav className="flex-1 space-y-1.5 px-3 overflow-y-auto">
+                  <nav className="flex-1 space-y-1.5 px-3 overflow-y-auto scrollbar-hide">
                     <NavItems />
                   </nav>
                   <div className="p-4 border-t border-white/10">
