@@ -8,10 +8,12 @@ import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
+import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { format } from 'date-fns';
 import { toast } from 'sonner';
+import { Clock, ExternalLink } from 'lucide-react';
 
 export default function AdminMeetings() {
   const { user } = useAuth();
@@ -90,6 +92,24 @@ export default function AdminMeetings() {
     }
   };
 
+  const getTimeRemaining = (scheduledTime: string) => {
+    const now = new Date();
+    const scheduled = new Date(scheduledTime);
+    const diffMs = scheduled.getTime() - now.getTime();
+
+    if (diffMs < 0) return 'Meeting time has passed';
+
+    const hours = Math.floor(diffMs / (1000 * 60 * 60));
+    const minutes = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
+
+    if (hours > 24) {
+      const days = Math.floor(hours / 24);
+      return `${days} day${days > 1 ? 's' : ''} remaining`;
+    }
+
+    return `${hours} hour${hours !== 1 ? 's' : ''}, ${minutes} minute${minutes !== 1 ? 's' : ''} remaining`;
+  };
+
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'Pending':
@@ -142,7 +162,15 @@ export default function AdminMeetings() {
                 meetings.map((meeting) => (
                   <TableRow key={meeting.id}>
                     <TableCell className="font-medium">
-                      {meeting.profiles?.full_name}
+                      <div className="space-y-1">
+                        <div>{meeting.profiles?.full_name}</div>
+                        {meeting.status === 'Accepted' && meeting.scheduled_date_time && (
+                          <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                            <Clock className="h-3 w-3" />
+                            {getTimeRemaining(meeting.scheduled_date_time)}
+                          </div>
+                        )}
+                      </div>
                     </TableCell>
                     <TableCell>
                       {format(new Date(meeting.requested_date_time), 'MMM d, yyyy h:mm a')}
@@ -158,13 +186,24 @@ export default function AdminMeetings() {
                       </Badge>
                     </TableCell>
                     <TableCell className="text-right">
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => setSelectedMeeting(meeting)}
-                      >
-                        Manage
-                      </Button>
+                      <div className="flex items-center justify-end gap-2">
+                        {meeting.meeting_link && meeting.status === 'Accepted' && (
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => window.open(meeting.meeting_link, '_blank')}
+                          >
+                            <ExternalLink className="h-4 w-4" />
+                          </Button>
+                        )}
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => setSelectedMeeting(meeting)}
+                        >
+                          Manage
+                        </Button>
+                      </div>
                     </TableCell>
                   </TableRow>
                 ))
@@ -188,16 +227,33 @@ export default function AdminMeetings() {
               <CardContent className="pt-6">
                 <div className="space-y-3">
                   <div className="flex justify-between items-start">
-                    <div>
+                    <div className="flex-1">
                       <p className="font-medium">{meeting.profiles?.full_name}</p>
                       <p className="text-sm text-muted-foreground">
                         {format(new Date(meeting.requested_date_time), 'MMM d, h:mm a')}
                       </p>
+                      {meeting.status === 'Accepted' && meeting.scheduled_date_time && (
+                        <div className="flex items-center gap-1 text-xs text-muted-foreground mt-1">
+                          <Clock className="h-3 w-3" />
+                          {getTimeRemaining(meeting.scheduled_date_time)}
+                        </div>
+                      )}
                     </div>
                     <Badge variant="outline" className={getStatusColor(meeting.status)}>
                       {meeting.status}
                     </Badge>
                   </div>
+                  {meeting.meeting_link && meeting.status === 'Accepted' && (
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="w-full"
+                      onClick={() => window.open(meeting.meeting_link, '_blank')}
+                    >
+                      <ExternalLink className="h-4 w-4 mr-2" />
+                      Join Google Meet
+                    </Button>
+                  )}
                   <Button
                     variant="outline"
                     size="sm"
