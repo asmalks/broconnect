@@ -10,7 +10,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { toast } from 'sonner';
 import { z } from 'zod';
-import { Sparkles, ArrowRight } from 'lucide-react';
+import { School, ArrowRight } from 'lucide-react';
 
 const centers = ['Kochi', 'Kozhikode', 'Trivandrum', 'Kannur', 'Thrissur'];
 
@@ -116,58 +116,54 @@ export default function Auth() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
+      <div className="flex items-center justify-center min-h-screen bg-background">
         <div className="relative">
           <div className="animate-spin rounded-full h-16 w-16 border-4 border-primary/20 border-t-primary"></div>
-          <div className="absolute inset-0 animate-glow-pulse rounded-full"></div>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center relative overflow-hidden bg-gradient-to-br from-background via-secondary/30 to-background p-4">
-      {/* Gradient Glow Effect */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-gradient-to-r from-primary/20 via-accent/20 to-primary/20 rounded-full blur-3xl opacity-30 animate-pulse"></div>
+    <div className="min-h-screen flex items-center justify-center relative overflow-hidden bg-background p-4">
+      {/* Soft Gradient Background */}
+      <div className="absolute inset-0 soft-gradient-bg"></div>
       
-      {/* Floating Decoration */}
-      <div className="absolute top-20 right-20 w-72 h-72 bg-accent/10 rounded-full blur-3xl animate-pulse"></div>
-      <div className="absolute bottom-20 left-20 w-96 h-96 bg-primary/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }}></div>
-
-      <Card className="w-full max-w-md glass-card relative z-10 border-border/50 animate-fade-in-up">
-        <CardHeader className="text-center space-y-3 pb-6">
+      <Card className="w-full max-w-md edu-card relative z-10 animate-fade-in-up">
+        <CardHeader className="text-center space-y-4 pb-6">
           <div className="flex justify-center mb-2">
-            <div className="relative">
-              <div className="w-16 h-16 bg-gradient-to-br from-primary to-orange-600 rounded-2xl flex items-center justify-center shadow-premium transform hover:scale-105 transition-transform duration-300">
-                <span className="text-3xl font-bold text-white">B</span>
-              </div>
-              <div className="absolute -top-1 -right-1">
-                <Sparkles className="w-5 h-5 text-primary animate-pulse" />
-              </div>
+            <div className="w-20 h-20 bg-gradient-to-br from-primary to-primary-dark rounded-3xl flex items-center justify-center shadow-lg">
+              <School className="w-10 h-10 text-white" />
             </div>
           </div>
-          <div className="space-y-1">
-            <CardTitle className="text-3xl font-bold bg-gradient-to-r from-primary via-orange-600 to-accent bg-clip-text text-transparent">
+          <div className="space-y-2">
+            <CardTitle className="text-3xl font-semibold text-foreground">
               Brototype Connect
             </CardTitle>
-            <CardDescription className="text-base font-medium">
-              Raise. Track. Resolve. – Powered by Brototype.
+            <CardDescription className="text-base text-muted-foreground font-medium">
+              Smart complaint & communication platform
             </CardDescription>
           </div>
         </CardHeader>
         <CardContent>
           <Tabs defaultValue="login" className="w-full">
-            <TabsList className="grid w-full grid-cols-2 p-1 bg-muted/50 backdrop-blur-sm">
-              <TabsTrigger value="login" className="rounded-lg data-[state=active]:bg-white data-[state=active]:shadow-sm">
+            <TabsList className="grid w-full grid-cols-2 p-1.5 bg-muted/50 rounded-2xl">
+              <TabsTrigger 
+                value="login" 
+                className="rounded-xl data-[state=active]:bg-white data-[state=active]:shadow-sm font-medium"
+              >
                 Login
               </TabsTrigger>
-              <TabsTrigger value="signup" className="rounded-lg data-[state=active]:bg-white data-[state=active]:shadow-sm">
+              <TabsTrigger 
+                value="signup" 
+                className="rounded-xl data-[state=active]:bg-white data-[state=active]:shadow-sm font-medium"
+              >
                 Sign Up
               </TabsTrigger>
             </TabsList>
             
             <TabsContent value="login" className="mt-6">
-              <form onSubmit={handleLogin} className="space-y-4">
+              <form onSubmit={handleLogin} className="space-y-5">
                 <div className="space-y-2">
                   <Label htmlFor="login-email" className="text-sm font-medium">Email</Label>
                   <Input
@@ -176,7 +172,7 @@ export default function Auth() {
                     placeholder="your.email@example.com"
                     value={loginEmail}
                     onChange={(e) => setLoginEmail(e.target.value)}
-                    className="h-11 bg-background/50 backdrop-blur-sm border-border/50 focus:border-primary transition-colors"
+                    className="h-12 rounded-xl border-border bg-background"
                     required
                   />
                 </div>
@@ -188,13 +184,13 @@ export default function Auth() {
                     placeholder="••••••••"
                     value={loginPassword}
                     onChange={(e) => setLoginPassword(e.target.value)}
-                    className="h-11 bg-background/50 backdrop-blur-sm border-border/50 focus:border-primary transition-colors"
+                    className="h-12 rounded-xl border-border bg-background"
                     required
                   />
                 </div>
                 <Button 
                   type="submit" 
-                  className="w-full h-11 bg-gradient-to-r from-primary to-orange-600 hover:from-primary/90 hover:to-orange-600/90 btn-premium text-white font-medium shadow-lg hover:shadow-xl transition-all duration-300 group" 
+                  className="w-full h-12 btn-purple mt-6 group" 
                   disabled={isLoading}
                 >
                   {isLoading ? (
@@ -213,7 +209,7 @@ export default function Auth() {
             </TabsContent>
             
             <TabsContent value="signup" className="mt-6">
-              <form onSubmit={handleSignup} className="space-y-4">
+              <form onSubmit={handleSignup} className="space-y-5">
                 <div className="space-y-2">
                   <Label htmlFor="signup-name" className="text-sm font-medium">Full Name</Label>
                   <Input
@@ -222,7 +218,7 @@ export default function Auth() {
                     placeholder="Your Full Name"
                     value={fullName}
                     onChange={(e) => setFullName(e.target.value)}
-                    className="h-11 bg-background/50 backdrop-blur-sm border-border/50 focus:border-primary transition-colors"
+                    className="h-12 rounded-xl border-border bg-background"
                     required
                   />
                 </div>
@@ -234,14 +230,14 @@ export default function Auth() {
                     placeholder="your.email@example.com"
                     value={signupEmail}
                     onChange={(e) => setSignupEmail(e.target.value)}
-                    className="h-11 bg-background/50 backdrop-blur-sm border-border/50 focus:border-primary transition-colors"
+                    className="h-12 rounded-xl border-border bg-background"
                     required
                   />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="signup-center" className="text-sm font-medium">Center</Label>
                   <Select value={center} onValueChange={setCenter} required>
-                    <SelectTrigger id="signup-center" className="h-11 bg-background/50 backdrop-blur-sm border-border/50 focus:border-primary transition-colors">
+                    <SelectTrigger id="signup-center" className="h-12 rounded-xl border-border bg-background">
                       <SelectValue placeholder="Select your center" />
                     </SelectTrigger>
                     <SelectContent>
@@ -261,13 +257,13 @@ export default function Auth() {
                     placeholder="••••••••"
                     value={signupPassword}
                     onChange={(e) => setSignupPassword(e.target.value)}
-                    className="h-11 bg-background/50 backdrop-blur-sm border-border/50 focus:border-primary transition-colors"
+                    className="h-12 rounded-xl border-border bg-background"
                     required
                   />
                 </div>
                 <Button 
                   type="submit" 
-                  className="w-full h-11 bg-gradient-to-r from-primary to-orange-600 hover:from-primary/90 hover:to-orange-600/90 btn-premium text-white font-medium shadow-lg hover:shadow-xl transition-all duration-300 group" 
+                  className="w-full h-12 btn-purple mt-6 group" 
                   disabled={isLoading}
                 >
                   {isLoading ? (

@@ -13,6 +13,10 @@ export default {
       },
     },
     extend: {
+      fontFamily: {
+        'poppins': ['Poppins', 'sans-serif'],
+        'sans': ['Poppins', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'sans-serif'],
+      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
@@ -65,6 +69,10 @@ export default {
           DEFAULT: "hsl(var(--warning))",
           foreground: "hsl(var(--warning-foreground))",
         },
+        "stat-pink": "hsl(var(--stat-pink))",
+        "stat-purple": "hsl(var(--stat-purple))",
+        "stat-yellow": "hsl(var(--stat-yellow))",
+        "stat-green": "hsl(var(--stat-green))",
         "hover-accent": "hsl(var(--hover-accent))",
         "message-sent": "hsl(var(--message-sent))",
         "message-received": "hsl(var(--message-received))",
