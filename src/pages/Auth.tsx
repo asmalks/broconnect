@@ -170,9 +170,6 @@ export default function Auth() {
         <div className="w-full max-w-md">
           <Card className="edu-card border-0 shadow-xl">
             <CardHeader className="space-y-3 pb-6">
-              <div className="flex justify-center lg:hidden mb-2">
-                <img src={logoImage} alt="Brototype" className="h-16" />
-              </div>
               <CardTitle className="text-2xl md:text-3xl font-bold text-center text-foreground">
                 Welcome
               </CardTitle>

@@ -67,9 +67,7 @@ export default function StudentLayout() {
         <div className="flex flex-col h-full">
           {/* Logo & Brand */}
           <div className="flex items-center justify-center gap-3 p-6">
-            <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center shadow-lg p-2">
-              <img src="/src/assets/logo-dark.webp" alt="Brototype" className="w-full h-auto" />
-            </div>
+            <img src="/src/assets/logo-dark.webp" alt="Brototype" className="h-10" />
           </div>
 
           {/* Profile Section */}
@@ -120,9 +118,7 @@ export default function StudentLayout() {
               <SheetContent side="left" className="w-64 p-0 sidebar-gradient">
                 <div className="flex flex-col h-full">
                   <div className="flex items-center justify-center gap-3 p-6">
-                    <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center shadow-lg p-2">
-                      <img src="/src/assets/logo-dark.webp" alt="Brototype" className="w-full h-auto" />
-                    </div>
+                    <img src="/src/assets/logo-dark.webp" alt="Brototype" className="h-10" />
                   </div>
                   <div className="px-4 mb-6">
                     <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-4 text-center">
