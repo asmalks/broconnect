@@ -21,6 +21,7 @@ export default function AdminMeetings() {
   const [status, setStatus] = useState('');
   const [scheduledDateTime, setScheduledDateTime] = useState('');
   const [notes, setNotes] = useState('');
+  const [meetingLink, setMeetingLink] = useState('');
   const [updating, setUpdating] = useState(false);
 
   useEffect(() => {
@@ -36,6 +37,7 @@ export default function AdminMeetings() {
         : '';
       setScheduledDateTime(scheduledTime);
       setNotes(selectedMeeting.notes || '');
+      setMeetingLink(selectedMeeting.meeting_link || '');
     }
   }, [selectedMeeting]);
 
@@ -63,6 +65,7 @@ export default function AdminMeetings() {
         status,
         admin_id: user?.id,
         notes: notes || null,
+        meeting_link: meetingLink || null,
       };
 
       if (scheduledDateTime) {
@@ -249,15 +252,29 @@ export default function AdminMeetings() {
             </div>
 
             {(status === 'Accepted' || status === 'Rescheduled') && (
-              <div className="space-y-2">
-                <Label>Scheduled Date & Time</Label>
-                <Input
-                  type="datetime-local"
-                  value={scheduledDateTime || ''}
-                  onChange={(e) => setScheduledDateTime(e.target.value)}
-                  min={new Date().toISOString().slice(0, 16)}
-                />
-              </div>
+              <>
+                <div className="space-y-2">
+                  <Label>Scheduled Date & Time</Label>
+                  <Input
+                    type="datetime-local"
+                    value={scheduledDateTime || ''}
+                    onChange={(e) => setScheduledDateTime(e.target.value)}
+                    min={new Date().toISOString().slice(0, 16)}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label>Google Meet Link (Optional)</Label>
+                  <Input
+                    type="url"
+                    value={meetingLink}
+                    onChange={(e) => setMeetingLink(e.target.value)}
+                    placeholder="https://meet.google.com/xxx-xxxx-xxx"
+                  />
+                  <p className="text-xs text-muted-foreground">
+                    Share a Google Meet link for the virtual meeting
+                  </p>
+                </div>
+              </>
             )}
 
             <div className="space-y-2">
