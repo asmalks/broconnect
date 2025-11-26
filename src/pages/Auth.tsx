@@ -200,9 +200,8 @@ export default function Auth() {
                   </TabsTrigger>
                 </TabsList>
                 
-                <div className="min-h-[440px]">
-                  <TabsContent value="login" className="mt-0">
-                    <form onSubmit={handleLogin} className="space-y-4">
+                <TabsContent value="login" className="mt-0">
+                  <form onSubmit={handleLogin} className="space-y-4">
                       <div className="space-y-2">
                         <Label htmlFor="login-email" className="text-sm font-medium">Email</Label>
                         <Input
@@ -319,7 +318,6 @@ export default function Auth() {
                     </Button>
                   </form>
                 </TabsContent>
-                </div>
               </Tabs>
             </CardContent>
           </Card>
