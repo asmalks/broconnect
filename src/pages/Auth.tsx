@@ -10,7 +10,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { toast } from 'sonner';
 import { z } from 'zod';
-import { School, ArrowRight, MessageSquare, CheckCircle2 } from 'lucide-react';
+import { ArrowRight, MessageSquare, CheckCircle2 } from 'lucide-react';
+import logoImage from '@/assets/logo-dark.webp';
 
 const centers = ['Kochi', 'Kozhikode', 'Trivandrum', 'Kannur', 'Thrissur'];
 
@@ -142,7 +143,7 @@ export default function Auth() {
             <div className="absolute inset-0 flex items-center justify-center">
               <div className="w-72 h-72 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 flex items-center justify-center">
                 <div className="w-56 h-56 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 flex items-center justify-center">
-                  <School className="w-24 h-24 text-white" />
+                  <img src={logoImage} alt="Brototype" className="w-32 h-auto" />
                 </div>
               </div>
             </div>
@@ -170,8 +171,8 @@ export default function Auth() {
           <Card className="edu-card border-0 shadow-xl">
             <CardHeader className="space-y-3 pb-6">
               <div className="flex justify-center lg:hidden mb-2">
-                <div className="w-16 h-16 bg-gradient-to-br from-primary to-primary-dark rounded-2xl flex items-center justify-center shadow-lg">
-                  <School className="w-8 h-8 text-white" />
+                <div className="w-20 h-20 bg-white rounded-2xl flex items-center justify-center shadow-lg p-3">
+                  <img src={logoImage} alt="Brototype" className="w-full h-auto" />
                 </div>
               </div>
               <CardTitle className="text-2xl md:text-3xl font-bold text-center text-foreground">
