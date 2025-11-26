@@ -7,6 +7,7 @@ import { useState, useEffect } from 'react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Input } from '@/components/ui/input';
 import { supabase } from '@/integrations/supabase/client';
+import logoImage from '@/assets/logo-dark.webp';
 
 const navigation = [
   { name: 'Dashboard', href: '/student', icon: LayoutDashboard },
@@ -67,7 +68,7 @@ export default function StudentLayout() {
         <div className="flex flex-col h-full">
           {/* Logo & Brand */}
           <div className="flex items-center justify-center gap-3 p-6">
-            <img src="/src/assets/logo-dark.webp" alt="Brototype" className="h-10" />
+            <img src={logoImage} alt="Brototype" className="h-10" />
           </div>
 
           {/* Profile Section */}
@@ -118,7 +119,7 @@ export default function StudentLayout() {
               <SheetContent side="left" className="w-64 p-0 sidebar-gradient">
                 <div className="flex flex-col h-full">
                   <div className="flex items-center justify-center gap-3 p-6">
-                    <img src="/src/assets/logo-dark.webp" alt="Brototype" className="h-10" />
+                    <img src={logoImage} alt="Brototype" className="h-10" />
                   </div>
                   <div className="px-4 mb-6">
                     <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-4 text-center">
@@ -149,7 +150,7 @@ export default function StudentLayout() {
               </SheetContent>
             </Sheet>
             <div className="hidden md:block">
-              <h2 className="text-xl font-semibold text-foreground">Welcome to Smart</h2>
+              <h2 className="text-xl font-semibold text-foreground">Welcome to Brototype Connect</h2>
             </div>
           </div>
 
