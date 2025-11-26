@@ -9,9 +9,10 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
-import { Calendar, Plus, Clock } from 'lucide-react';
-import { format } from 'date-fns';
+import { Calendar, Plus, Clock, ExternalLink, AlertCircle } from 'lucide-react';
+import { format, differenceInHours, differenceInMinutes } from 'date-fns';
 import { toast } from 'sonner';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 
 export default function Meetings() {
   const { user } = useAuth();
@@ -111,6 +112,22 @@ export default function Meetings() {
     }
   };
 
+  const getTimeRemaining = (scheduledTime: string) => {
+    const now = new Date();
+    const meetingTime = new Date(scheduledTime);
+    const hoursRemaining = differenceInHours(meetingTime, now);
+    const minutesRemaining = differenceInMinutes(meetingTime, now) % 60;
+
+    if (hoursRemaining < 0) return null; // Past meeting
+    
+    if (hoursRemaining === 0 && minutesRemaining > 0) {
+      return `in ${minutesRemaining} minutes`;
+    } else if (hoursRemaining > 0) {
+      return `in ${hoursRemaining}h ${minutesRemaining}m`;
+    }
+    return null;
+  };
+
   if (loading) {
     return <div className="flex justify-center p-8">Loading...</div>;
   }
@@ -201,38 +218,65 @@ export default function Meetings() {
             </CardContent>
           </Card>
         ) : (
-          meetings.map((meeting) => (
-            <Card key={meeting.id}>
-              <CardHeader>
-                <div className="flex justify-between items-start">
-                  <div>
-                    <CardTitle className="text-lg">
-                      Meeting Request #{meeting.id.slice(0, 8)}
-                    </CardTitle>
-                    <CardDescription>
-                      {format(new Date(meeting.requested_date_time), 'MMMM d, yyyy h:mm a')}
-                    </CardDescription>
+          meetings.map((meeting) => {
+            const timeRemaining = meeting.scheduled_date_time && meeting.status === 'Accepted' 
+              ? getTimeRemaining(meeting.scheduled_date_time) 
+              : null;
+            
+            return (
+              <Card key={meeting.id}>
+                <CardHeader>
+                  <div className="flex justify-between items-start">
+                    <div>
+                      <CardTitle className="text-lg">
+                        Meeting Request #{meeting.id.slice(0, 8)}
+                      </CardTitle>
+                      <CardDescription>
+                        Requested: {format(new Date(meeting.requested_date_time), 'MMMM d, yyyy h:mm a')}
+                      </CardDescription>
+                    </div>
+                    <Badge variant="outline" className={getStatusColor(meeting.status)}>
+                      {meeting.status}
+                    </Badge>
                   </div>
-                  <Badge variant="outline" className={getStatusColor(meeting.status)}>
-                    {meeting.status}
-                  </Badge>
-                </div>
-              </CardHeader>
-              <CardContent>
-                {meeting.notes && (
-                  <p className="text-sm text-muted-foreground mb-4">{meeting.notes}</p>
-                )}
-                {meeting.scheduled_date_time && (
-                  <div className="flex items-center gap-2 text-sm">
-                    <Clock className="h-4 w-4 text-primary" />
-                    <span>
-                      Scheduled: {format(new Date(meeting.scheduled_date_time), 'MMMM d, yyyy h:mm a')}
-                    </span>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-          ))
+                </CardHeader>
+                <CardContent className="space-y-3">
+                  {meeting.notes && (
+                    <p className="text-sm text-muted-foreground">{meeting.notes}</p>
+                  )}
+                  {meeting.scheduled_date_time && (
+                    <>
+                      <div className="flex items-center gap-2 text-sm font-medium">
+                        <Clock className="h-4 w-4 text-primary" />
+                        <span>
+                          Scheduled: {format(new Date(meeting.scheduled_date_time), 'MMMM d, yyyy h:mm a')}
+                        </span>
+                      </div>
+                      {timeRemaining && (
+                        <Alert className="bg-primary/5 border-primary/20">
+                          <AlertCircle className="h-4 w-4 text-primary" />
+                          <AlertTitle className="text-primary">Meeting Reminder</AlertTitle>
+                          <AlertDescription>
+                            Your meeting is scheduled {timeRemaining}
+                          </AlertDescription>
+                        </Alert>
+                      )}
+                      {meeting.meeting_link && (
+                        <Button 
+                          variant="outline" 
+                          className="w-full justify-between"
+                          onClick={() => window.open(meeting.meeting_link, '_blank')}
+                        >
+                          Join Google Meet
+                          <ExternalLink className="h-4 w-4" />
+                        </Button>
+                      )}
+                    </>
+                  )}
+                </CardContent>
+              </Card>
+            );
+          })
         )}
       </div>
     </div>

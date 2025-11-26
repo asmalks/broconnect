@@ -212,6 +212,7 @@ export type Database = {
           complaint_id: string | null
           created_at: string
           id: string
+          meeting_link: string | null
           notes: string | null
           requested_date_time: string
           scheduled_date_time: string | null
@@ -224,6 +225,7 @@ export type Database = {
           complaint_id?: string | null
           created_at?: string
           id?: string
+          meeting_link?: string | null
           notes?: string | null
           requested_date_time: string
           scheduled_date_time?: string | null
@@ -236,6 +238,7 @@ export type Database = {
           complaint_id?: string | null
           created_at?: string
           id?: string
+          meeting_link?: string | null
           notes?: string | null
           requested_date_time?: string
           scheduled_date_time?: string | null
