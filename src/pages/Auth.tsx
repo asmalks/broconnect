@@ -13,7 +13,7 @@ import { z } from 'zod';
 import { ArrowRight, MessageSquare, CheckCircle2 } from 'lucide-react';
 import logoImage from '@/assets/logo-dark.webp';
 
-const centers = ['Kochi', 'Kozhikode', 'Trivandrum', 'Kannur', 'Thrissur'];
+const centers = ['Kochi', 'Kozhikode', 'Trivandrum', 'Bengaluru', 'Coimbatore', 'Chennai'];
 
 const loginSchema = z.object({
   email: z.string().email('Invalid email address'),
@@ -200,8 +200,9 @@ export default function Auth() {
                   </TabsTrigger>
                 </TabsList>
                 
-                <TabsContent value="login" className="mt-0">
-                  <form onSubmit={handleLogin} className="space-y-5">
+                <div className="min-h-[420px]">
+                  <TabsContent value="login" className="mt-0">
+                    <form onSubmit={handleLogin} className="space-y-5">
                     <div className="space-y-2">
                       <Label htmlFor="login-email" className="text-sm font-medium">Email</Label>
                       <Input
@@ -318,6 +319,7 @@ export default function Auth() {
                     </Button>
                   </form>
                 </TabsContent>
+                </div>
               </Tabs>
             </CardContent>
           </Card>
