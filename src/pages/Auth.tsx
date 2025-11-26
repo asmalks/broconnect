@@ -171,8 +171,8 @@ export default function Auth() {
           <Card className="edu-card border-0 shadow-xl">
             <CardHeader className="space-y-3 pb-6">
               <div className="flex justify-center lg:hidden mb-2">
-                <div className="w-20 h-20 bg-white rounded-2xl flex items-center justify-center shadow-lg p-3">
-                  <img src={logoImage} alt="Brototype" className="w-full h-auto" />
+                <div className="w-20 h-20 bg-gradient-to-br from-primary to-primary-variant rounded-2xl flex items-center justify-center shadow-lg p-3">
+                  <img src={logoImage} alt="Brototype" className="w-full h-auto brightness-0 invert" />
                 </div>
               </div>
               <CardTitle className="text-2xl md:text-3xl font-bold text-center text-foreground">

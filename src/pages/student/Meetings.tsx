@@ -77,7 +77,7 @@ export default function Meetings() {
       const { error } = await supabase.from('meetings').insert({
         student_id: user?.id,
         complaint_id: complaintId && complaintId !== 'none' ? complaintId : null,
-        requested_date_time: requestedDateTime,
+        requested_date_time: new Date(requestedDateTime).toISOString(),
         notes: notes.trim() || null,
       });
 

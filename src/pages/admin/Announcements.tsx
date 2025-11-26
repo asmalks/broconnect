@@ -235,20 +235,21 @@ export default function Announcements() {
           </Card>
         ) : (
           announcements.map((announcement) => (
-            <Card key={announcement.id} className={announcement.is_active ? 'border-l-4 border-l-warning bg-warning/5' : ''}>
+            <Card key={announcement.id} className={announcement.is_active ? 'border-l-4 border-l-primary' : ''}>
               <CardHeader>
-                <div className="flex justify-between items-start">
-                  <div className="flex-1">
-                    <CardTitle className={`text-lg ${announcement.is_active ? 'text-warning' : ''}`}>{announcement.title}</CardTitle>
+                <div className="flex justify-between items-start gap-3">
+                  <div className="flex-1 min-w-0">
+                    <CardTitle className={`text-lg ${announcement.is_active ? 'text-primary' : ''}`}>{announcement.title}</CardTitle>
                     <CardDescription className="mt-2">
                       {announcement.message}
                     </CardDescription>
                   </div>
-                  <div className="flex gap-2">
+                  <div className="flex gap-2 flex-shrink-0">
                     <Button
                       variant="ghost"
                       size="icon"
                       onClick={() => { setEditing(announcement); setOpen(true); }}
+                      className="hidden md:flex"
                     >
                       <Edit className="h-4 w-4" />
                     </Button>
@@ -256,25 +257,43 @@ export default function Announcements() {
                       variant="ghost"
                       size="icon"
                       onClick={() => handleDelete(announcement.id)}
+                      className="hidden md:flex"
                     >
                       <Trash2 className="h-4 w-4" />
                     </Button>
+                    {/* Mobile: Single centered action button */}
+                    <div className="flex md:hidden flex-col gap-2 items-center">
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => { setEditing(announcement); setOpen(true); }}
+                      >
+                        <Edit className="h-4 w-4" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => handleDelete(announcement.id)}
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </div>
                   </div>
                 </div>
               </CardHeader>
               <CardContent>
-                <div className="flex flex-wrap gap-2 items-center text-sm">
+                 <div className="flex flex-wrap gap-2 items-center text-sm">
                   <Badge 
                     variant={announcement.is_active ? 'default' : 'secondary'}
-                    className={announcement.is_active ? 'bg-warning hover:bg-warning/80' : ''}
+                    className={announcement.is_active ? 'bg-primary hover:bg-primary/80' : ''}
                   >
                     {announcement.is_active ? 'Active' : 'Inactive'}
                   </Badge>
-                  <Badge variant="outline">
+                  <Badge variant="outline" className="hidden md:inline-flex">
                     {announcement.target_center || 'All Centers'}
                   </Badge>
                   {announcement.expires_at && (
-                    <span className="text-muted-foreground">
+                    <span className="text-muted-foreground hidden md:inline">
                       Expires: {format(new Date(announcement.expires_at), 'MMM d, yyyy')}
                     </span>
                   )}

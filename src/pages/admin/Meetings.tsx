@@ -30,7 +30,11 @@ export default function AdminMeetings() {
   useEffect(() => {
     if (selectedMeeting) {
       setStatus(selectedMeeting.status);
-      setScheduledDateTime(selectedMeeting.scheduled_date_time || '');
+      // Convert ISO string to local datetime-local format
+      const scheduledTime = selectedMeeting.scheduled_date_time 
+        ? new Date(selectedMeeting.scheduled_date_time).toISOString().slice(0, 16)
+        : '';
+      setScheduledDateTime(scheduledTime);
       setNotes(selectedMeeting.notes || '');
     }
   }, [selectedMeeting]);
@@ -62,7 +66,8 @@ export default function AdminMeetings() {
       };
 
       if (scheduledDateTime) {
-        updates.scheduled_date_time = scheduledDateTime;
+        // Convert local datetime to ISO string for database storage
+        updates.scheduled_date_time = new Date(scheduledDateTime).toISOString();
       }
 
       const { error } = await supabase
@@ -110,7 +115,8 @@ export default function AdminMeetings() {
         </p>
       </div>
 
-      <Card>
+      {/* Desktop Table View */}
+      <Card className="hidden md:block">
         <CardContent className="p-0">
           <Table>
             <TableHeader>
@@ -165,6 +171,45 @@ export default function AdminMeetings() {
         </CardContent>
       </Card>
 
+      {/* Mobile Card View */}
+      <div className="md:hidden space-y-4">
+        {meetings.length === 0 ? (
+          <Card>
+            <CardContent className="py-12 text-center text-muted-foreground">
+              No meeting requests found.
+            </CardContent>
+          </Card>
+        ) : (
+          meetings.map((meeting) => (
+            <Card key={meeting.id}>
+              <CardContent className="pt-6">
+                <div className="space-y-3">
+                  <div className="flex justify-between items-start">
+                    <div>
+                      <p className="font-medium">{meeting.profiles?.full_name}</p>
+                      <p className="text-sm text-muted-foreground">
+                        {format(new Date(meeting.requested_date_time), 'MMM d, h:mm a')}
+                      </p>
+                    </div>
+                    <Badge variant="outline" className={getStatusColor(meeting.status)}>
+                      {meeting.status}
+                    </Badge>
+                  </div>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="w-full"
+                    onClick={() => setSelectedMeeting(meeting)}
+                  >
+                    Manage
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          ))
+        )}
+      </div>
+
       <Dialog open={!!selectedMeeting} onOpenChange={() => setSelectedMeeting(null)}>
         <DialogContent>
           <DialogHeader>
@@ -208,8 +253,9 @@ export default function AdminMeetings() {
                 <Label>Scheduled Date & Time</Label>
                 <Input
                   type="datetime-local"
-                  value={scheduledDateTime ? new Date(scheduledDateTime).toISOString().slice(0, 16) : ''}
-                  onChange={(e) => setScheduledDateTime(e.target.value ? new Date(e.target.value).toISOString() : '')}
+                  value={scheduledDateTime || ''}
+                  onChange={(e) => setScheduledDateTime(e.target.value)}
+                  min={new Date().toISOString().slice(0, 16)}
                 />
               </div>
             )}
