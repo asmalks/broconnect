@@ -52,7 +52,24 @@ export default function RaiseComplaint() {
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
-      setFile(e.target.files[0]);
+      const selectedFile = e.target.files[0];
+      
+      // Validate file size (10MB max)
+      if (selectedFile.size > 10 * 1024 * 1024) {
+        toast.error('File size must be less than 10MB');
+        e.target.value = '';
+        return;
+      }
+      
+      // Validate file type
+      const allowedTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'application/pdf'];
+      if (!allowedTypes.includes(selectedFile.type)) {
+        toast.error('Only images (JPEG, PNG, WebP, GIF) and PDF files are allowed');
+        e.target.value = '';
+        return;
+      }
+      
+      setFile(selectedFile);
     }
   };
 

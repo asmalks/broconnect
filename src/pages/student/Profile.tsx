@@ -78,15 +78,18 @@ export default function Profile() {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    // Validate file type
-    if (!file.type.startsWith('image/')) {
-      toast.error('Please upload an image file');
+    // Validate file size (2MB max for avatars)
+    if (file.size > 2 * 1024 * 1024) {
+      toast.error('Avatar size must be less than 2MB');
+      e.target.value = '';
       return;
     }
 
-    // Validate file size (max 5MB)
-    if (file.size > 5 * 1024 * 1024) {
-      toast.error('Image size must be less than 5MB');
+    // Validate file type - only allow specific image types
+    const allowedTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
+    if (!allowedTypes.includes(file.type)) {
+      toast.error('Only JPEG, PNG, WebP, and GIF images are allowed');
+      e.target.value = '';
       return;
     }
 
