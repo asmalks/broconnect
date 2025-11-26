@@ -97,7 +97,7 @@ export default function AdminDashboard() {
     <div className="space-y-8 animate-fade-in">
       {/* Header - matching reference style */}
       <div>
-        <h1 className="text-2xl md:text-3xl font-semibold text-foreground mb-2">Dashboard Overview</h1>
+        <h1 className="text-2xl md:text-3xl font-semibold text-foreground mb-2">Welcome to Brototype Connect</h1>
         <p className="text-muted-foreground font-medium">
           Monitor complaints and performance across all centers
         </p>
@@ -244,21 +244,6 @@ export default function AdminDashboard() {
         </Card>
       </div>
 
-      {/* Welcome Message - Educational Style */}
-      <Card className="edu-card p-6 md:p-8 bg-gradient-to-br from-primary/5 via-accent/5 to-warning/5">
-        <div className="flex flex-col md:flex-row items-center gap-6">
-          <div className="w-20 h-20 bg-gradient-to-br from-primary to-primary-dark rounded-3xl flex items-center justify-center shadow-lg">
-            <School className="w-10 h-10 text-white" />
-          </div>
-          <div className="flex-1 text-center md:text-left">
-            <h2 className="text-2xl font-semibold mb-2">Welcome to Brototype Connect! 🎉</h2>
-            <p className="text-muted-foreground">
-              Your smart platform for managing complaints, communication, and student engagement. 
-              Monitor all activities and ensure prompt resolution of issues across all centers.
-            </p>
-          </div>
-        </div>
-      </Card>
     </div>
   );
 }
