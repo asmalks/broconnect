@@ -1,10 +1,13 @@
 import { Outlet, Link, useLocation } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
-import { LayoutDashboard, Plus, ListOrdered, MessageSquare, Calendar, User, LogOut, Menu } from 'lucide-react';
+import { LayoutDashboard, Plus, ListOrdered, MessageSquare, Calendar, User, LogOut, Menu, School, Bell, Search } from 'lucide-react';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import AnnouncementBanner from '@/components/AnnouncementBanner';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Input } from '@/components/ui/input';
+import { supabase } from '@/integrations/supabase/client';
 
 const navigation = [
   { name: 'Dashboard', href: '/student', icon: LayoutDashboard },
@@ -17,8 +20,23 @@ const navigation = [
 
 export default function StudentLayout() {
   const location = useLocation();
-  const { signOut } = useAuth();
+  const { signOut, user } = useAuth();
   const [open, setOpen] = useState(false);
+  const [profileData, setProfileData] = useState<any>(null);
+
+  useEffect(() => {
+    loadProfile();
+  }, [user]);
+
+  const loadProfile = async () => {
+    if (!user) return;
+    const { data } = await supabase
+      .from('profiles')
+      .select('*')
+      .eq('id', user.id)
+      .single();
+    setProfileData(data);
+  };
 
   const NavItems = () => (
     <>
@@ -29,12 +47,14 @@ export default function StudentLayout() {
             key={item.name}
             to={item.href}
             onClick={() => setOpen(false)}
-            className={`flex items-center gap-3 rounded-lg px-3 py-2 transition-all hover:bg-hover-accent ${
-              isActive ? 'bg-primary/10 text-primary font-medium border-l-2 border-primary' : 'text-muted-foreground'
+            className={`group flex items-center gap-3 rounded-2xl px-4 py-3 transition-all duration-200 ${
+              isActive 
+                ? 'bg-white/20 text-white font-medium shadow-sm backdrop-blur-sm' 
+                : 'text-white/80 hover:bg-white/10 hover:text-white'
             }`}
           >
             <item.icon className="h-5 w-5" />
-            {item.name}
+            <span className="text-sm font-medium">{item.name}</span>
           </Link>
         );
       })}
@@ -42,70 +62,130 @@ export default function StudentLayout() {
   );
 
   return (
-    <div className="flex min-h-screen w-full flex-col md:flex-row">
-      {/* Desktop Sidebar */}
-      <aside className="hidden md:flex md:w-64 flex-col border-r bg-card md:fixed md:inset-y-0">
-        <div className="flex h-14 md:h-16 items-center border-b px-4 md:px-6">
-          <div className="flex items-center gap-2">
-            <div className="w-7 h-7 md:w-8 md:h-8 bg-primary rounded-lg flex items-center justify-center">
-              <span className="text-base md:text-lg font-bold text-primary-foreground">B</span>
+    <div className="flex min-h-screen w-full flex-col md:flex-row bg-background">
+      {/* Desktop Sidebar - Purple Gradient */}
+      <aside className="hidden md:flex md:w-64 flex-col sidebar-gradient md:fixed md:inset-y-0">
+        <div className="flex flex-col h-full">
+          {/* Logo & Brand */}
+          <div className="flex items-center justify-center gap-3 p-6">
+            <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center shadow-lg">
+              <School className="w-7 h-7 text-primary" />
             </div>
-            <span className="font-bold text-base md:text-lg">Brototype</span>
           </div>
-        </div>
-        <nav className="flex-1 space-y-1 p-3 md:p-4 overflow-y-auto">
-          <NavItems />
-        </nav>
-        <div className="border-t p-3 md:p-4">
-          <Button variant="ghost" className="w-full justify-start text-sm" onClick={signOut}>
-            <LogOut className="mr-2 md:mr-3 h-4 md:h-5 w-4 md:w-5" />
-            Logout
-          </Button>
+
+          {/* Profile Section */}
+          <div className="px-4 mb-6">
+            <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-4 text-center">
+              <Avatar className="w-16 h-16 mx-auto mb-2 border-2 border-white/50">
+                <AvatarImage src={profileData?.avatar_url || ''} />
+                <AvatarFallback className="bg-white/20 text-white font-semibold">
+                  {profileData?.full_name?.substring(0, 2).toUpperCase() || 'ST'}
+                </AvatarFallback>
+              </Avatar>
+              <p className="text-white font-semibold text-sm">{profileData?.full_name || 'Student'}</p>
+              <p className="text-white/70 text-xs">{profileData?.center || 'Brototype'}</p>
+            </div>
+          </div>
+
+          {/* Navigation */}
+          <nav className="flex-1 space-y-1.5 px-3 overflow-y-auto">
+            <NavItems />
+          </nav>
+
+          {/* Logout */}
+          <div className="p-4 border-t border-white/10">
+            <Button 
+              variant="ghost" 
+              className="w-full justify-start text-white hover:bg-white/10 rounded-2xl font-medium" 
+              onClick={signOut}
+            >
+              <LogOut className="mr-3 h-5 w-5" />
+              Logout
+            </Button>
+          </div>
         </div>
       </aside>
 
       {/* Main Content */}
       <div className="flex-1 flex flex-col md:ml-64">
-        {/* Mobile Header */}
-        <header className="md:hidden flex h-14 items-center gap-3 border-b bg-card px-3 sticky top-0 z-10">
-          <Sheet open={open} onOpenChange={setOpen}>
-            <SheetTrigger asChild>
-              <Button variant="ghost" size="icon" className="h-9 w-9">
-                <Menu className="h-5 w-5" />
-              </Button>
-            </SheetTrigger>
-            <SheetContent side="left" className="w-64 p-0">
-              <div className="flex h-14 items-center border-b px-4">
-                <div className="flex items-center gap-2">
-                  <div className="w-7 h-7 bg-primary rounded-lg flex items-center justify-center">
-                    <span className="text-base font-bold text-primary-foreground">B</span>
-                  </div>
-                  <span className="font-bold text-base">Brototype</span>
-                </div>
-              </div>
-              <nav className="flex-1 space-y-1 p-3">
-                <NavItems />
-              </nav>
-              <div className="border-t p-3">
-                <Button variant="ghost" className="w-full justify-start text-sm" onClick={signOut}>
-                  <LogOut className="mr-2 h-4 w-4" />
-                  Logout
+        {/* Top Header Bar */}
+        <header className="h-16 md:h-20 flex items-center justify-between px-4 md:px-8 bg-white border-b border-border/50 sticky top-0 z-10 shadow-sm">
+          {/* Mobile Menu & Welcome */}
+          <div className="flex items-center gap-4">
+            <Sheet open={open} onOpenChange={setOpen}>
+              <SheetTrigger asChild>
+                <Button variant="ghost" size="icon" className="md:hidden h-10 w-10 rounded-xl">
+                  <Menu className="h-5 w-5" />
                 </Button>
-              </div>
-            </SheetContent>
-          </Sheet>
-          <div className="flex items-center gap-2">
-            <div className="w-7 h-7 bg-primary rounded-lg flex items-center justify-center">
-              <span className="text-base font-bold text-primary-foreground">B</span>
+              </SheetTrigger>
+              <SheetContent side="left" className="w-64 p-0 sidebar-gradient">
+                <div className="flex flex-col h-full">
+                  <div className="flex items-center justify-center gap-3 p-6">
+                    <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center shadow-lg">
+                      <School className="w-7 h-7 text-primary" />
+                    </div>
+                  </div>
+                  <div className="px-4 mb-6">
+                    <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-4 text-center">
+                      <Avatar className="w-16 h-16 mx-auto mb-2 border-2 border-white/50">
+                        <AvatarImage src={profileData?.avatar_url || ''} />
+                        <AvatarFallback className="bg-white/20 text-white font-semibold">
+                          {profileData?.full_name?.substring(0, 2).toUpperCase() || 'ST'}
+                        </AvatarFallback>
+                      </Avatar>
+                      <p className="text-white font-semibold text-sm">{profileData?.full_name || 'Student'}</p>
+                      <p className="text-white/70 text-xs">{profileData?.center || 'Brototype'}</p>
+                    </div>
+                  </div>
+                  <nav className="flex-1 space-y-1.5 px-3 overflow-y-auto">
+                    <NavItems />
+                  </nav>
+                  <div className="p-4 border-t border-white/10">
+                    <Button 
+                      variant="ghost" 
+                      className="w-full justify-start text-white hover:bg-white/10 rounded-2xl font-medium" 
+                      onClick={signOut}
+                    >
+                      <LogOut className="mr-3 h-5 w-5" />
+                      Logout
+                    </Button>
+                  </div>
+                </div>
+              </SheetContent>
+            </Sheet>
+            <div className="hidden md:block">
+              <h2 className="text-xl font-semibold text-foreground">Welcome to Smart</h2>
             </div>
-            <span className="font-bold text-base">Brototype</span>
+          </div>
+
+          {/* Search & Actions */}
+          <div className="flex items-center gap-3">
+            <div className="hidden md:flex items-center">
+              <div className="relative">
+                <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                <Input
+                  type="search"
+                  placeholder="Search..."
+                  className="search-bar pl-11 w-64"
+                />
+              </div>
+            </div>
+            <Button variant="ghost" size="icon" className="relative rounded-xl h-10 w-10">
+              <Bell className="w-5 h-5" />
+            </Button>
+            <Avatar className="w-10 h-10 border-2 border-border cursor-pointer">
+              <AvatarImage src={profileData?.avatar_url || ''} />
+              <AvatarFallback className="bg-primary text-white font-semibold">
+                {profileData?.full_name?.substring(0, 2).toUpperCase() || 'ST'}
+              </AvatarFallback>
+            </Avatar>
           </div>
         </header>
 
         {/* Page Content */}
-        <main className="flex-1 p-3 md:p-6 overflow-auto">
+        <main className="flex-1 p-4 md:p-8 overflow-auto">
           <AnnouncementBanner />
-          <div className="mt-3 md:mt-6">
+          <div className="mt-4 md:mt-6">
             <Outlet />
           </div>
         </main>

@@ -2,132 +2,144 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
-All colors MUST be HSL.
-*/
+/* Educational Dashboard Design System - Inspired by Reference */
 
 @layer base {
   :root {
-    /* Premium SaaS Design System */
-    --background: 30 40% 98%;
-    --foreground: 215 25% 12%;
+    /* Soft Pastel Educational Theme */
+    --background: 242 242 250%;
+    --foreground: 45 29% 23%;
 
-    /* Glassmorphic Card */
+    /* Pure White Cards */
     --card: 0 0% 100%;
-    --card-foreground: 215 25% 12%;
+    --card-foreground: 45 29% 23%;
     --card-glass: 0 0% 100%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 215 25% 12%;
+    --popover-foreground: 45 29% 23%;
 
-    /* Brototype Orange Primary */
-    --primary: 24 95% 53%;
+    /* Purple Primary (from reference) */
+    --primary: 254 73% 61%;
     --primary-foreground: 0 0% 100%;
-    --primary-glow: 24 95% 53%;
+    --primary-dark: 254 67% 51%;
 
-    /* Soft Cream Secondary */
-    --secondary: 30 28% 94%;
-    --secondary-foreground: 215 25% 12%;
+    /* Soft Secondary Colors */
+    --secondary: 242 47% 97%;
+    --secondary-foreground: 45 29% 23%;
 
-    --muted: 30 20% 96%;
-    --muted-foreground: 215 16% 47%;
+    /* Muted Backgrounds */
+    --muted: 240 17% 96%;
+    --muted-foreground: 240 6% 50%;
 
-    /* Teal Accent */
-    --accent: 173 58% 39%;
+    /* Mint Green Accent (from reference) */
+    --accent: 153 62% 48%;
     --accent-foreground: 0 0% 100%;
+
+    /* Soft Yellow (from reference) */
+    --warning: 44 92% 63%;
+    --warning-foreground: 45 29% 23%;
+
+    /* Success Green */
+    --success: 153 62% 48%;
+    --success-foreground: 0 0% 100%;
 
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
 
-    /* Minimal borders */
-    --border: 30 20% 88%;
-    --input: 30 20% 88%;
-    --ring: 24 95% 53%;
+    /* Subtle Borders */
+    --border: 240 17% 90%;
+    --input: 240 17% 90%;
+    --ring: 254 73% 61%;
     
-    --success: 142 76% 36%;
-    --success-foreground: 0 0% 100%;
+    /* Large Rounded Corners (20-26px) */
+    --radius: 1.375rem;
     
-    --warning: 38 92% 50%;
-    --warning-foreground: 20 40% 10%;
+    /* Educational Gradients */
+    --gradient-purple: linear-gradient(180deg, #6A49F2 0%, #5E3AE4 50%, #7B68EE 100%);
+    --gradient-sidebar: linear-gradient(180deg, #6A49F2 0%, #5E3AE4 60%, #7B68EE 100%);
+    --gradient-card: linear-gradient(180deg, #FFFFFF 0%, #F7F7FA 100%);
+    --gradient-soft: linear-gradient(135deg, rgba(106, 73, 242, 0.1) 0%, rgba(94, 58, 228, 0.1) 100%);
 
-    /* Rounded corners 18-24px */
-    --radius: 1.125rem;
+    /* Purple Gradient Sidebar */
+    --sidebar-background: 254 73% 61%;
+    --sidebar-foreground: 0 0% 100%;
+    --sidebar-primary: 0 0% 100%;
+    --sidebar-primary-foreground: 254 73% 61%;
+    --sidebar-accent: 254 73% 55%;
+    --sidebar-accent-foreground: 0 0% 100%;
+    --sidebar-border: 254 73% 55%;
+    --sidebar-ring: 0 0% 100%;
     
-    /* Premium Gradients */
-    --gradient-primary: linear-gradient(135deg, hsl(24 95% 53%) 0%, hsl(38 92% 50%) 100%);
-    --gradient-card: linear-gradient(180deg, hsl(0 0% 100% / 0.9), hsl(0 0% 100% / 0.7));
-    --gradient-hero: linear-gradient(135deg, hsl(24 95% 53%) 0%, hsl(173 58% 39%) 100%);
-    --gradient-glow: radial-gradient(circle at 50% 0%, hsl(24 95% 53% / 0.15), transparent 50%);
-
-    /* Modern Sidebar */
-    --sidebar-background: 27 20% 98%;
-    --sidebar-foreground: 215 25% 12%;
-    --sidebar-primary: 24 95% 53%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 30 20% 96%;
-    --sidebar-accent-foreground: 215 25% 12%;
-    --sidebar-border: 30 20% 88%;
-    --sidebar-ring: 24 95% 53%;
+    /* Dashboard Colors */
+    --stat-pink: 350 100% 85%;
+    --stat-purple: 254 73% 61%;
+    --stat-yellow: 44 92% 63%;
+    --stat-green: 153 62% 48%;
     
-    --hover-accent: 30 40% 94%;
-    --message-sent: 24 95% 53%;
-    --message-received: 30 20% 96%;
+    --hover-accent: 240 17% 96%;
+    --message-sent: 254 73% 61%;
+    --message-received: 240 17% 96%;
   }
 
   .dark {
-    --background: 215 25% 12%;
-    --foreground: 30 20% 96%;
+    --background: 254 73% 8%;
+    --foreground: 0 0% 95%;
 
-    --card: 217 33% 17%;
-    --card-foreground: 30 20% 96%;
-    --card-glass: 217 33% 17%;
+    --card: 254 45% 12%;
+    --card-foreground: 0 0% 95%;
+    --card-glass: 254 45% 12%;
 
-    --popover: 217 33% 17%;
-    --popover-foreground: 30 20% 96%;
+    --popover: 254 45% 12%;
+    --popover-foreground: 0 0% 95%;
 
-    --primary: 24 95% 53%;
+    --primary: 254 73% 61%;
     --primary-foreground: 0 0% 100%;
-    --primary-glow: 24 95% 53%;
+    --primary-dark: 254 67% 51%;
 
-    --secondary: 217 33% 20%;
-    --secondary-foreground: 30 20% 96%;
+    --secondary: 254 45% 18%;
+    --secondary-foreground: 0 0% 95%;
 
-    --muted: 217 33% 22%;
-    --muted-foreground: 215 20% 65%;
+    --muted: 254 35% 20%;
+    --muted-foreground: 240 17% 65%;
 
-    --accent: 173 58% 39%;
+    --accent: 153 62% 48%;
     --accent-foreground: 0 0% 100%;
+
+    --warning: 44 92% 63%;
+    --warning-foreground: 45 29% 23%;
+
+    --success: 153 62% 48%;
+    --success-foreground: 0 0% 100%;
 
     --destructive: 0 70% 45%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 217 33% 25%;
-    --input: 217 33% 25%;
-    --ring: 24 95% 53%;
+    --border: 254 35% 25%;
+    --input: 254 35% 25%;
+    --ring: 254 73% 61%;
     
-    --success: 142 76% 36%;
-    --success-foreground: 0 0% 100%;
+    --gradient-purple: linear-gradient(180deg, #5A3FD4 0%, #4E2FC6 50%, #6B58DE 100%);
+    --gradient-sidebar: linear-gradient(180deg, #5A3FD4 0%, #4E2FC6 60%, #6B58DE 100%);
+    --gradient-card: linear-gradient(180deg, #1A1A2E 0%, #16162A 100%);
+    --gradient-soft: linear-gradient(135deg, rgba(90, 63, 212, 0.15) 0%, rgba(78, 47, 198, 0.15) 100%);
     
-    --warning: 38 92% 50%;
-    --warning-foreground: 20 40% 10%;
+    --sidebar-background: 254 73% 10%;
+    --sidebar-foreground: 0 0% 95%;
+    --sidebar-primary: 0 0% 95%;
+    --sidebar-primary-foreground: 254 73% 61%;
+    --sidebar-accent: 254 45% 18%;
+    --sidebar-accent-foreground: 0 0% 95%;
+    --sidebar-border: 254 35% 25%;
+    --sidebar-ring: 254 73% 61%;
     
-    --gradient-primary: linear-gradient(135deg, hsl(24 95% 53%) 0%, hsl(38 92% 50%) 100%);
-    --gradient-card: linear-gradient(180deg, hsl(217 33% 17% / 0.9), hsl(217 33% 17% / 0.7));
-    --gradient-hero: linear-gradient(135deg, hsl(24 95% 53%) 0%, hsl(173 58% 39%) 100%);
-    --gradient-glow: radial-gradient(circle at 50% 0%, hsl(24 95% 53% / 0.15), transparent 50%);
+    --stat-pink: 350 80% 45%;
+    --stat-purple: 254 73% 55%;
+    --stat-yellow: 44 85% 55%;
+    --stat-green: 153 55% 40%;
     
-    --sidebar-background: 215 25% 10%;
-    --sidebar-foreground: 30 20% 96%;
-    --sidebar-primary: 24 95% 53%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 217 33% 20%;
-    --sidebar-accent-foreground: 30 20% 96%;
-    --sidebar-border: 217 33% 25%;
-    --sidebar-ring: 24 95% 53%;
-    
-    --hover-accent: 217 33% 28%;
-    --message-sent: 24 95% 53%;
-    --message-received: 217 33% 22%;
+    --hover-accent: 254 35% 22%;
+    --message-sent: 254 73% 55%;
+    --message-received: 254 35% 20%;
   }
 }
 
@@ -138,61 +150,145 @@ All colors MUST be HSL.
 
   body {
     @apply bg-background text-foreground;
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
     font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+    font-weight: 400;
+    letter-spacing: -0.01em;
   }
 
   h1, h2, h3, h4, h5, h6 {
     font-weight: 600;
-    letter-spacing: -0.025em;
+    letter-spacing: -0.02em;
   }
 
   h1 {
-    @apply text-3xl md:text-4xl;
+    @apply text-3xl md:text-4xl font-semibold;
   }
 
   h2 {
-    @apply text-2xl md:text-3xl;
+    @apply text-2xl md:text-3xl font-semibold;
   }
 
   h3 {
-    @apply text-xl md:text-2xl;
+    @apply text-xl md:text-2xl font-medium;
   }
 }
 
 @layer components {
-  /* Glassmorphic Card */
-  .glass-card {
-    @apply bg-card/70 backdrop-blur-xl border-border/50 shadow-[0_8px_32px_rgba(0,0,0,0.08)];
+  /* Educational Soft Card (from reference) */
+  .edu-card {
+    @apply bg-card rounded-[1.375rem] border border-border/50;
+    box-shadow: 0px 4px 16px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
-  /* Premium Card with Soft Shadow */
-  .premium-card {
-    @apply bg-card rounded-[1.125rem] shadow-[0_8px_24px_rgba(0,0,0,0.08)] hover:shadow-[0_12px_32px_rgba(0,0,0,0.12)] transition-all duration-300;
+  .edu-card:hover {
+    box-shadow: 0px 8px 24px rgba(0, 0, 0, 0.12);
+    transform: translateY(-2px);
   }
 
-  /* Gradient Glow Effect */
-  .glow-effect {
-    position: relative;
+  /* Stat Card with Icon Box */
+  .stat-card {
+    @apply edu-card p-5 flex items-center gap-4;
   }
 
-  .glow-effect::before {
-    content: '';
-    position: absolute;
-    inset: -50px;
-    background: var(--gradient-glow);
-    opacity: 0.5;
-    z-index: -1;
-    filter: blur(40px);
+  .stat-icon-box {
+    @apply w-14 h-14 rounded-2xl flex items-center justify-center text-2xl;
+    transition: transform 0.3s ease;
   }
 
-  /* Smooth Hover Scale */
+  .stat-card:hover .stat-icon-box {
+    transform: scale(1.1);
+  }
+
+  /* Sidebar Gradient Background */
+  .sidebar-gradient {
+    background: var(--gradient-sidebar);
+  }
+
+  /* Soft Purple Button */
+  .btn-purple {
+    @apply bg-primary hover:bg-primary-dark text-white font-medium rounded-2xl px-6 py-3 transition-all duration-300;
+    box-shadow: 0 4px 12px rgba(106, 73, 242, 0.3);
+  }
+
+  .btn-purple:hover {
+    box-shadow: 0 6px 16px rgba(106, 73, 242, 0.4);
+    transform: translateY(-1px);
+  }
+
+  /* Rounded Pill Badge */
+  .pill-badge {
+    @apply inline-flex items-center px-4 py-1.5 rounded-full text-sm font-medium;
+  }
+
+  /* Clean Search Bar */
+  .search-bar {
+    @apply bg-white rounded-full border border-border/50 px-5 py-2.5 focus:outline-none focus:border-primary transition-all;
+    box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.06);
+  }
+
+  /* Calendar Highlight */
+  .calendar-day {
+    @apply w-10 h-10 rounded-full flex items-center justify-center text-sm font-medium transition-all;
+  }
+
+  .calendar-day.active {
+    @apply bg-success text-white;
+  }
+
+  .calendar-day.today {
+    @apply bg-warning text-foreground;
+  }
+
+  /* Performance Card (from Top Scorer cards) */
+  .performance-card {
+    @apply edu-card p-6 text-center relative overflow-hidden;
+  }
+
+  .performance-card.green {
+    @apply bg-gradient-to-br from-success to-success/80 text-white;
+  }
+
+  .performance-card.purple {
+    @apply bg-gradient-to-br from-primary to-primary/80 text-white;
+  }
+
+  .performance-card.yellow {
+    @apply bg-gradient-to-br from-warning to-warning/80 text-foreground;
+  }
+
+  /* Smooth Hover Animation */
   .hover-lift {
-    @apply transition-all duration-300 hover:scale-[1.02] hover:shadow-lg;
+    @apply transition-all duration-300 hover:scale-[1.02];
   }
 
-  /* Modern Button Styles */
-  .btn-premium {
-    @apply relative overflow-hidden before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-white/20 before:to-transparent before:translate-x-[-200%] hover:before:translate-x-[200%] before:transition-transform before:duration-700;
+  /* Large Spacing Layout */
+  .edu-section {
+    @apply mb-8 md:mb-12;
+  }
+
+  .edu-section-title {
+    @apply text-xl md:text-2xl font-semibold mb-6;
+  }
+
+  /* Icon in Colored Box Pattern */
+  .icon-box {
+    @apply w-12 h-12 rounded-xl flex items-center justify-center;
+  }
+
+  /* Soft Gradient Background */
+  .soft-gradient-bg {
+    background: var(--gradient-soft);
+  }
+
+  /* View All Button (outline green from reference) */
+  .btn-outline-green {
+    @apply border-2 border-success text-success rounded-xl px-5 py-2 font-medium hover:bg-success hover:text-white transition-all duration-300;
+  }
+
+  /* Clean Divider */
+  .soft-divider {
+    @apply border-t border-border/50 my-4;
   }
 }
