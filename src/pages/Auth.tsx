@@ -200,52 +200,52 @@ export default function Auth() {
                   </TabsTrigger>
                 </TabsList>
                 
-                <div className="min-h-[420px]">
+                <div className="min-h-[440px]">
                   <TabsContent value="login" className="mt-0">
-                    <form onSubmit={handleLogin} className="space-y-5">
-                    <div className="space-y-2">
-                      <Label htmlFor="login-email" className="text-sm font-medium">Email</Label>
-                      <Input
-                        id="login-email"
-                        type="email"
-                        placeholder="your.email@example.com"
-                        value={loginEmail}
-                        onChange={(e) => setLoginEmail(e.target.value)}
-                        className="h-12 rounded-xl"
-                        required
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="login-password" className="text-sm font-medium">Password</Label>
-                      <Input
-                        id="login-password"
-                        type="password"
-                        placeholder="Enter your password"
-                        value={loginPassword}
-                        onChange={(e) => setLoginPassword(e.target.value)}
-                        className="h-12 rounded-xl"
-                        required
-                      />
-                    </div>
-                    <Button 
-                      type="submit" 
-                      className="w-full h-12 btn-purple mt-6 group" 
-                      disabled={isLoading}
-                    >
-                      {isLoading ? (
-                        <span className="flex items-center gap-2">
-                          <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-                          Signing in...
-                        </span>
-                      ) : (
-                        <span className="flex items-center gap-2">
-                          Sign In
-                          <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                        </span>
-                      )}
-                    </Button>
-                  </form>
-                </TabsContent>
+                    <form onSubmit={handleLogin} className="space-y-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="login-email" className="text-sm font-medium">Email</Label>
+                        <Input
+                          id="login-email"
+                          type="email"
+                          placeholder="your.email@example.com"
+                          value={loginEmail}
+                          onChange={(e) => setLoginEmail(e.target.value)}
+                          className="h-12 rounded-xl"
+                          required
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="login-password" className="text-sm font-medium">Password</Label>
+                        <Input
+                          id="login-password"
+                          type="password"
+                          placeholder="Enter your password"
+                          value={loginPassword}
+                          onChange={(e) => setLoginPassword(e.target.value)}
+                          className="h-12 rounded-xl"
+                          required
+                        />
+                      </div>
+                      <Button 
+                        type="submit" 
+                        className="w-full h-12 btn-purple mt-6 group" 
+                        disabled={isLoading}
+                      >
+                        {isLoading ? (
+                          <span className="flex items-center gap-2">
+                            <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                            Signing in...
+                          </span>
+                        ) : (
+                          <span className="flex items-center gap-2">
+                            Sign In
+                            <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                          </span>
+                        )}
+                      </Button>
+                    </form>
+                  </TabsContent>
                 
                 <TabsContent value="signup" className="mt-0">
                   <form onSubmit={handleSignup} className="space-y-4">
