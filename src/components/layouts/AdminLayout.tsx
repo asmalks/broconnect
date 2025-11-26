@@ -1,7 +1,7 @@
 import { Outlet, Link, useLocation } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
-import { LayoutDashboard, ListOrdered, MessageSquare, Calendar, BarChart3, Megaphone, Users, LogOut, Menu, Building2, UserCircle } from 'lucide-react';
+import { LayoutDashboard, ListOrdered, MessageSquare, Calendar, BarChart3, Megaphone, Users, LogOut, Menu, Building2, UserCircle, Sparkles } from 'lucide-react';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
@@ -92,13 +92,17 @@ export default function AdminLayout() {
             key={item.name}
             to={item.href}
             onClick={() => setOpen(false)}
-            className={`flex items-center gap-3 rounded-lg px-3 py-2 transition-all hover:bg-hover-accent ${
-              isActive ? 'bg-primary/10 text-primary font-medium border-l-2 border-primary' : 'text-muted-foreground'
+            className={`group flex items-center gap-3 rounded-xl px-3 py-2.5 transition-all duration-200 ${
+              isActive 
+                ? 'bg-gradient-to-r from-primary/10 to-primary/5 text-primary font-medium shadow-sm' 
+                : 'text-muted-foreground hover:bg-sidebar-accent hover:text-foreground'
             }`}
           >
-            <item.icon className="h-5 w-5" />
-            {item.name}
-            {item.badge && <NotificationBadge count={badgeCount} />}
+            <div className={`p-1.5 rounded-lg ${isActive ? 'bg-primary/10' : 'group-hover:bg-sidebar-accent'} transition-colors`}>
+              <item.icon className="h-4 w-4" />
+            </div>
+            <span className="text-sm">{item.name}</span>
+            {item.badge && badgeCount > 0 && <NotificationBadge count={badgeCount} />}
           </Link>
         );
       })}
@@ -106,23 +110,35 @@ export default function AdminLayout() {
   );
 
   return (
-    <div className="flex min-h-screen w-full flex-col md:flex-row">
+    <div className="flex min-h-screen w-full flex-col md:flex-row bg-background">
       {/* Desktop Sidebar */}
-      <aside className="hidden md:flex md:w-64 flex-col border-r bg-card md:fixed md:inset-y-0">
-        <div className="flex h-14 md:h-16 items-center border-b px-4 md:px-6">
-          <div className="flex items-center gap-2">
-            <div className="w-7 h-7 md:w-8 md:h-8 bg-primary rounded-lg flex items-center justify-center">
-              <span className="text-base md:text-lg font-bold text-primary-foreground">B</span>
+      <aside className="hidden md:flex md:w-64 flex-col border-r border-border/50 bg-sidebar/50 backdrop-blur-xl md:fixed md:inset-y-0 shadow-sm">
+        <div className="flex h-16 items-center border-b border-border/50 px-6">
+          <div className="flex items-center gap-3">
+            <div className="relative">
+              <div className="w-9 h-9 bg-gradient-to-br from-primary to-orange-600 rounded-xl flex items-center justify-center shadow-md">
+                <span className="text-lg font-bold text-white">B</span>
+              </div>
+              <div className="absolute -top-0.5 -right-0.5">
+                <Sparkles className="w-3 h-3 text-primary" />
+              </div>
             </div>
-            <span className="font-bold text-base md:text-lg">Admin Panel</span>
+            <div>
+              <span className="font-bold text-lg">Admin Panel</span>
+              <p className="text-xs text-muted-foreground">Brototype Connect</p>
+            </div>
           </div>
         </div>
-        <nav className="flex-1 space-y-1 p-3 md:p-4 overflow-y-auto">
+        <nav className="flex-1 space-y-1 p-4 overflow-y-auto">
           <NavItems />
         </nav>
-        <div className="border-t p-3 md:p-4">
-          <Button variant="ghost" className="w-full justify-start text-sm" onClick={signOut}>
-            <LogOut className="mr-2 md:mr-3 h-4 md:h-5 w-4 md:w-5" />
+        <div className="border-t border-border/50 p-4">
+          <Button 
+            variant="ghost" 
+            className="w-full justify-start text-sm hover:bg-destructive/10 hover:text-destructive transition-colors" 
+            onClick={signOut}
+          >
+            <LogOut className="mr-3 h-4 w-4" />
             Logout
           </Button>
         </div>
@@ -131,27 +147,34 @@ export default function AdminLayout() {
       {/* Main Content */}
       <div className="flex-1 flex flex-col md:ml-64">
         {/* Mobile Header */}
-        <header className="md:hidden flex h-14 items-center gap-3 border-b bg-card px-3 sticky top-0 z-10">
+        <header className="md:hidden flex h-14 items-center gap-3 border-b border-border/50 bg-card/80 backdrop-blur-xl px-3 sticky top-0 z-10 shadow-sm">
           <Sheet open={open} onOpenChange={setOpen}>
             <SheetTrigger asChild>
               <Button variant="ghost" size="icon" className="h-9 w-9">
                 <Menu className="h-5 w-5" />
               </Button>
             </SheetTrigger>
-            <SheetContent side="left" className="w-64 p-0">
-              <div className="flex h-14 items-center border-b px-4">
+            <SheetContent side="left" className="w-64 p-0 bg-sidebar/95 backdrop-blur-xl">
+              <div className="flex h-14 items-center border-b border-border/50 px-4">
                 <div className="flex items-center gap-2">
-                  <div className="w-7 h-7 bg-primary rounded-lg flex items-center justify-center">
-                    <span className="text-base font-bold text-primary-foreground">B</span>
+                  <div className="w-8 h-8 bg-gradient-to-br from-primary to-orange-600 rounded-xl flex items-center justify-center shadow-md">
+                    <span className="text-base font-bold text-white">B</span>
                   </div>
-                  <span className="font-bold text-base">Admin Panel</span>
+                  <div>
+                    <span className="font-bold text-base">Admin Panel</span>
+                    <p className="text-[10px] text-muted-foreground">Brototype</p>
+                  </div>
                 </div>
               </div>
               <nav className="flex-1 space-y-1 p-3">
                 <NavItems />
               </nav>
-              <div className="border-t p-3">
-                <Button variant="ghost" className="w-full justify-start text-sm" onClick={signOut}>
+              <div className="border-t border-border/50 p-3">
+                <Button 
+                  variant="ghost" 
+                  className="w-full justify-start text-sm hover:bg-destructive/10 hover:text-destructive" 
+                  onClick={signOut}
+                >
                   <LogOut className="mr-2 h-4 w-4" />
                   Logout
                 </Button>
@@ -159,15 +182,15 @@ export default function AdminLayout() {
             </SheetContent>
           </Sheet>
           <div className="flex items-center gap-2">
-            <div className="w-7 h-7 bg-primary rounded-lg flex items-center justify-center">
-              <span className="text-base font-bold text-primary-foreground">B</span>
+            <div className="w-7 h-7 bg-gradient-to-br from-primary to-orange-600 rounded-lg flex items-center justify-center shadow-sm">
+              <span className="text-sm font-bold text-white">B</span>
             </div>
             <span className="font-bold text-base">Admin</span>
           </div>
         </header>
 
         {/* Page Content */}
-        <main className="flex-1 p-3 md:p-6 overflow-auto">
+        <main className="flex-1 p-4 md:p-8 overflow-auto">
           <Outlet />
         </main>
       </div>
