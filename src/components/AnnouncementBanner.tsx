@@ -13,19 +13,19 @@ export default function AnnouncementBanner() {
 
   const loadAnnouncements = async () => {
     try {
-      const now = new Date().toISOString();
-      
+      // Fetch all active announcements (no expiry filter in query)
       const { data, error } = await supabase
         .from('announcements')
         .select('*')
         .eq('is_active', true)
-        .or(`expires_at.is.null,expires_at.gte.${now}`)
         .order('created_at', { ascending: false });
 
       if (error) throw error;
       
+      const now = new Date();
+      
       // Auto-deactivate expired announcements
-      const expired = data?.filter(a => a.expires_at && new Date(a.expires_at) < new Date()) || [];
+      const expired = data?.filter(a => a.expires_at && new Date(a.expires_at) < now) || [];
       if (expired.length > 0) {
         await supabase
           .from('announcements')
@@ -33,7 +33,9 @@ export default function AnnouncementBanner() {
           .in('id', expired.map(a => a.id));
       }
       
-      setAnnouncements(data?.filter(a => !a.expires_at || new Date(a.expires_at) >= new Date()) || []);
+      // Show only non-expired announcements
+      const activeAnnouncements = data?.filter(a => !a.expires_at || new Date(a.expires_at) >= now) || [];
+      setAnnouncements(activeAnnouncements);
     } catch (error) {
       console.error('Error loading announcements:', error);
     }
