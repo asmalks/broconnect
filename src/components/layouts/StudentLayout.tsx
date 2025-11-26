@@ -4,7 +4,6 @@ import { Button } from '@/components/ui/button';
 import { LayoutDashboard, Plus, ListOrdered, MessageSquare, Calendar, User, LogOut, Menu, School, Bell, Search } from 'lucide-react';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { useState, useEffect } from 'react';
-import AnnouncementBanner from '@/components/AnnouncementBanner';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Input } from '@/components/ui/input';
 import { supabase } from '@/integrations/supabase/client';
@@ -88,7 +87,7 @@ export default function StudentLayout() {
           </div>
 
           {/* Navigation */}
-          <nav className="flex-1 space-y-1.5 px-3 overflow-y-auto">
+          <nav className="flex-1 space-y-1.5 px-3 overflow-y-auto scrollbar-hide">
             <NavItems />
           </nav>
 
@@ -137,7 +136,7 @@ export default function StudentLayout() {
                       <p className="text-white/70 text-xs">{profileData?.center || 'Brototype'}</p>
                     </div>
                   </div>
-                  <nav className="flex-1 space-y-1.5 px-3 overflow-y-auto">
+                  <nav className="flex-1 space-y-1.5 px-3 overflow-y-auto scrollbar-hide">
                     <NavItems />
                   </nav>
                   <div className="p-4 border-t border-white/10">
@@ -184,10 +183,7 @@ export default function StudentLayout() {
 
         {/* Page Content */}
         <main className="flex-1 p-4 md:p-8 overflow-auto">
-          <AnnouncementBanner />
-          <div className="mt-4 md:mt-6">
-            <Outlet />
-          </div>
+          <Outlet />
         </main>
       </div>
     </div>

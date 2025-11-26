@@ -2,9 +2,10 @@ import { useEffect, useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
-import { Plus, AlertTriangle } from 'lucide-react';
+import { Plus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useNavigate } from 'react-router-dom';
+import AnnouncementBanner from '@/components/AnnouncementBanner';
 
 export default function StudentDashboard() {
   const { user } = useAuth();
@@ -128,23 +129,7 @@ export default function StudentDashboard() {
         ))}
       </div>
 
-      <Card className="edu-card p-6 bg-gradient-to-br from-primary/5 via-accent/5 to-warning/5">
-        <div className="flex flex-col md:flex-row items-center gap-6">
-          <div className="icon-box bg-warning/20 w-16 h-16">
-            <AlertTriangle className="w-8 h-8 text-warning" />
-          </div>
-          <div className="flex-1 text-center md:text-left">
-            <h3 className="text-xl font-semibold mb-2">Need Help? 🤝</h3>
-            <p className="text-muted-foreground mb-4">
-              Have an issue or concern? Raise a complaint and our team will assist you promptly.
-            </p>
-            <Button onClick={() => navigate('/student/raise-complaint')} className="btn-purple">
-              <Plus className="w-4 h-4 mr-2" />
-              Raise New Complaint
-            </Button>
-          </div>
-        </div>
-      </Card>
+      <AnnouncementBanner />
     </div>
   );
 }
