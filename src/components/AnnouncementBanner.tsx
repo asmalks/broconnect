@@ -44,8 +44,13 @@ export default function AnnouncementBanner() {
   if (announcements.length === 0) return null;
 
   return (
-    <div className="space-y-3 mb-6">
-      {announcements.map((announcement) => (
+    <div className="space-y-4 mb-6">
+      <div className="flex items-center gap-2">
+        <Megaphone className="h-5 w-5 text-primary" />
+        <h2 className="text-xl md:text-2xl font-semibold text-foreground">Announcements</h2>
+      </div>
+      <div className="space-y-3">
+        {announcements.map((announcement) => (
         <Card key={announcement.id} className="border-primary/20 bg-gradient-to-r from-primary/10 via-accent/5 to-primary/5 shadow-md">
           <CardHeader className="pb-3">
             <div className="flex items-start gap-3">
@@ -68,7 +73,8 @@ export default function AnnouncementBanner() {
             </p>
           </CardContent>
         </Card>
-      ))}
+        ))}
+      </div>
     </div>
   );
 }
