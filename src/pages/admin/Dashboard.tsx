@@ -97,9 +97,9 @@ export default function AdminDashboard() {
     <div className="space-y-8 animate-fade-in">
       {/* Header - matching reference style */}
       <div>
-        <h1 className="text-2xl md:text-3xl font-semibold text-foreground mb-2">Welcome to Brototype Connect</h1>
+        <h1 className="text-2xl md:text-3xl font-semibold text-foreground mb-2">Dashboard</h1>
         <p className="text-muted-foreground font-medium">
-          Monitor complaints and performance across all centers
+          Track and manage complaints across all centers
         </p>
       </div>
 
